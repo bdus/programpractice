@@ -1,0 +1,96 @@
+clc;clear;close all;
+%% data
+% T = {(x_0,y_0),(x_1,y_1),...,(x_n,y_n)}
+% vector default as column
+% data = [
+%   3 3 +1;
+%   4 3 +1;
+%   1 1 -1  
+% ];
+% x = data(:,1:(end-1))';
+% 
+% y = data(:,end)';
+% x = [3 3;
+%     4 3;
+%     1 1]'
+% 
+% y = [+1;
+%     +1;
+%     -1]'
+MU1 = [3 3];
+MU2 = [4 3];
+MU3 = [10 10];
+SIGMA1 = [1 0;0 1];
+SIGMA2 = [1 0;0 1];
+SIGMA3 = [1 0;0 1];
+X = [mvnrnd(MU1, SIGMA1, 1000);mvnrnd(MU2, SIGMA2, 1000)];
+Y = [mvnrnd(MU3, SIGMA1, 1000);mvnrnd(MU3, SIGMA2, 1000)];
+plot(X(:,1),X(:,2),'*');
+hold on;
+plot(Y(:,1),Y(:,2),'+');hold off;
+text(3,3,'1');
+text(4,3,'2');
+text(10,10,'3');
+
+x = [X;Y]';
+
+y =  [ones(1,length(X)) -ones(1,length(Y))];
+
+
+
+
+% init x
+x_i = x(:,1);
+y_i = y(:,1);
+%xbar = [x_i' 1]';
+ plot(x(1,(y==1)),x(2,(y==1)),'+');hold on;plot(x(1,(y==-1)),x(2,(y==-1)),'*');hold off;
+% ==================
+assert(length(x) == length(y))
+dim = size(x);
+x_dim = dim(2);
+%% hypothesis
+% init w_0 b_0
+init_w = [0;0];
+init_b = 0;
+w = init_w;
+b = init_b;
+%wbar = [init_w' init_b]';
+% f(x) = sign(w*conj(x) + b)
+f1 = @(wbar,xbar)(sign(conj(w)*x_i+b)) %f = @(wbar,xbar)(sign(conj(wbar)*xbar))
+f2 = @(w,b,x,y)(y*(w'*x+b));
+% cost function
+   %L = @(wbar,xbar)()
+
+%% min L(wbar)
+k = 1; % loop contral
+alpha = 1; % learning rate
+while 1
+	L = 0;
+	
+	for i = 1:length(x)
+		tmp = y(i)*(w'*x(:,i)+b);        
+		if  tmp <= 0 
+			% update
+			w = w + alpha*y(i)*x(:,i);
+			b = b + alpha*y(i);
+			% cost 			
+			L = L + tmp;
+		end
+	end		
+	if L == 0
+		break;
+    end
+    hold on;
+    p_range =[1:0.1:10] %[min(x(:)):0.1:max(x(:))]
+    line  = @(x,k,b)(-x.*k-b);
+    line_gen2k = @(x,A,B,C)(-x.*A/B-C/B);
+    plot(p_range,line(p_range,w(1)/w(2),b/w(2)));
+    text(mean(p_range),line(mean(p_range),w(1)/w(2),b/w(2)),int2str(k))
+    hold off;
+    %pause;
+	k = k + 1	
+end
+clc;
+k
+w
+b

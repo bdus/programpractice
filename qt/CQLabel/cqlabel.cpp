@@ -45,9 +45,14 @@ void CQLabel::mousePressEvent(QMouseEvent *e)
         m_beginPoint = e->pos();
         int index = getSelectRectIndex(m_layout,e->pos());
         if(index == -1)
-            QMessageBox::information(this,"error","OCCOR -1");
-        m_selectedRect  = &m_layout[index];
-        m_CurrState     = beginMove;
+        {
+            ;//QMessageBox::information(this,"error","OCCOR -1");
+        }
+        else if(index >= 0)
+        {
+            m_selectedRect  = &m_layout[index];
+            m_CurrState     = beginMove;
+        }
     }
     else
         ;

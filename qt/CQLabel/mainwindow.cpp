@@ -7,14 +7,24 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    CQLabel * label = new CQLabel(this);
+    auto tmpStore = ui->label->geometry();
+    ui->label->hide();
+    ui->label->setParent(0);
+    ui->label->deleteLater();
+
+
+    CQLabel * clabel = new CQLabel(this);
+    //clabel->clear();
     const QString filename = "E:/lcx/project/programpractice/qt/capture/img.PNG";
     QPixmap img;
     img.load(filename);
-    label->setGeometry(QRect(40, 30, 701, 491));
-    //label->setText("hello");
-    label->setPixmap(img);
-    label->show();
+    clabel->setGeometry(tmpStore);
+
+    clabel->setStyleSheet("QLabel{border:2px solid rgb(0, 255, 0);}");
+
+    clabel->setPixmap(img);
+
+    clabel->show();
 
 }
 

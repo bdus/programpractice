@@ -25,22 +25,22 @@ class CQLabel : public QLabel
 public:
     explicit CQLabel(QWidget *parent = nullptr);
 
-private:
-
     QVector<QRect> m_layout;         //保存划分结果
+    int m_selectedIndex;
+    PainStatus m_CurrState;        //当前状态
+
+private:
     QRect * m_selectedRect;
     QRect m_MoveTo;
     QPoint m_beginPoint, m_endPoint, m_nowPos;
     int var_x,var_y;
-    PainStatus m_CurrState;        //当前状态
 
     bool m_isMousePress;
     QPixmap m_loadPixmap, m_capturePixmap;
-    int m_screenwidth;
-    int m_screenheight;
+//    int m_screenwidth;
+//    int m_screenheight;
 
     QPainter m_painter;
-
 
 private:
     void initWindow();

@@ -22,13 +22,15 @@ void CQLabel::initWindow()
     //ui->label->adjustSize();
 
     //init pen
-    //m_painter->
-    //m_painter.setPen(QPen(Qt::yellow, 1, Qt::SolidLine, Qt::FlatCap));
+
 
     //init label
-    const QString filename = "E:/lcx/project/programpractice/qt/capture/img.PNG";
-    m_loadPixmap.load(filename);
-    m_capturePixmap = m_loadPixmap;
+//    const QString filename = "E:/lcx/project/programpractice/qt/capture/img.PNG";
+//    m_loadPixmap.load(filename);
+//    m_capturePixmap = m_loadPixmap;
+
+
+
 }
 
 void CQLabel::mousePressEvent(QMouseEvent *e)
@@ -43,16 +45,16 @@ void CQLabel::mousePressEvent(QMouseEvent *e)
     else if(e->button() == Qt::RightButton && m_CurrState != initPaint && m_layout.empty() != true)
     {
         m_beginPoint = e->pos();
-        int index = getSelectRectIndex(m_layout,e->pos());
-        if(index == -1)
+        m_selectedIndex = getSelectRectIndex(m_layout,e->pos());
+        if(m_selectedIndex == -1)
         {
             ;//QMessageBox::information(this,"error","OCCOR -1");
         }
-        else if(index >= 0)
+        else if(m_selectedIndex >= 0)
         {
-            m_selectedRect  = &m_layout[index];
+            m_selectedRect  = &m_layout[m_selectedIndex];
             m_CurrState     = beginMove;
-            m_MoveTo = m_layout[index].translated(0,0);
+            m_MoveTo = m_layout[m_selectedIndex].translated(0,0);
         }
     }
     else
@@ -117,7 +119,6 @@ void CQLabel::paintEvent(QPaintEvent *e)
 {
     m_painter.begin(this);
 
-
     switch (m_CurrState) {
     case initPaint:
         break;
@@ -133,8 +134,6 @@ void CQLabel::paintEvent(QPaintEvent *e)
         m_painter.drawRects(m_layout);
         m_painter.drawLine(m_beginPoint,m_nowPos);
         m_painter.drawRect(m_MoveTo.translated(var_x,var_y));
-
-        //m_painter.drawRect(QRect(tmpo,tmpsize));
 
         break;
     default:

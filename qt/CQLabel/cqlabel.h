@@ -29,6 +29,7 @@ private:
 
     QVector<QRect> m_layout;         //保存划分结果
     QRect * m_selectedRect;
+    QRect m_MoveTo;
     QPoint m_beginPoint, m_endPoint, m_nowPos;
     int var_x,var_y;
     PainStatus m_CurrState;        //当前状态

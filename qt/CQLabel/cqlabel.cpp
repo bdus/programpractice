@@ -52,6 +52,7 @@ void CQLabel::mousePressEvent(QMouseEvent *e)
         {
             m_selectedRect  = &m_layout[index];
             m_CurrState     = beginMove;
+            m_MoveTo = m_layout[index].translated(0,0);
         }
     }
     else
@@ -77,10 +78,11 @@ void CQLabel::mouseReleaseEvent(QMouseEvent *e)
     {
         m_endPoint = e->pos();
 
-        m_selectedRect->adjust(var_x,var_y,var_x,var_y);
+        //m_selectedRect->adjust(var_x,var_y,var_x,var_y);
+        m_selectedRect->translate(var_x,var_y);
 
-        //m_selectedRect->setBottom();
         m_CurrState = endMove;
+
         update();
     }
     else
@@ -93,10 +95,15 @@ void CQLabel::mouseMoveEvent(QMouseEvent *e)
 {
     switch (m_CurrState) {
     case beginPaint:
+        m_nowPos = e->pos();
+        update();
+        break;
     case beginMove:
         m_nowPos = e->pos();
         var_x = m_nowPos.x() - m_beginPoint.x();
         var_y = m_nowPos.y() - m_beginPoint.y();
+
+        //        m_MoveTo.translate(var_x,var_y);
         update();
         break;
     default:
@@ -124,7 +131,8 @@ void CQLabel::paintEvent(QPaintEvent *e)
         break;
     case beginMove:
         m_painter.drawRects(m_layout);
-        m_painter.drawRect(QRect(m_beginPoint,m_nowPos));
+        m_painter.drawLine(m_beginPoint,m_nowPos);
+        m_painter.drawRect(m_MoveTo.translated(var_x,var_y));
 
         //m_painter.drawRect(QRect(tmpo,tmpsize));
 

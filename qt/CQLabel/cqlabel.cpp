@@ -112,7 +112,7 @@ void CQLabel::mousePressEvent(QMouseEvent *e)
             m_selectedRect  = &m_layout[m_selectedIndex];
             if(m_selectedIndex_bk != m_selectedIndex)
             {
-                qDebug() << m_selectedIndex_bk << '\n';
+                //qDebug() << m_selectedIndex_bk << '\n';
                 m_selectedIndex_bk = m_selectedIndex;
                 emit selectChanged(m_selectedIndex);
                 tag[4]->setText(QString::number(m_selectedIndex));
@@ -211,27 +211,42 @@ void CQLabel::paintEvent(QPaintEvent *e)
 
 }
 
+/**
+ * 返回mlayout中 包含鼠标地址的 最小的框 的index
+ * return == -1
+ *      没有选中包含的
+ *
+ * */
 int CQLabel::getSelectRectIndex(QVector<QRect> &mlayout, QPoint pos)
 {
-    int ans = -1;
-    int area = mlayout[0].height()*mlayout[0].width();
+    int index = -1;
+    unsigned int area = -1;
+
+    for(int i = 0 ; i < mlayout.size(); i++)
+    {
+        if(mlayout.at(i).contains((pos)) == true)
+        {
+            //fisrt
+            //index = i;
+            //area = (unsigned int)(mlayout[i].width()*mlayout[i].height());
+            //other
+            if(mlayout[i].width()*mlayout[i].height() < area)
+            {
+                index = i;
+                area = (unsigned int)(mlayout[i].width()*mlayout[i].height());
+            }
+        }
+    }
+
+    return index;
+
+    //
     #ifdef DEBUG
     mmsg("count" + QString::number(mlayout.count()));
     #endif
 
-    for(int i = 0; i < mlayout.count(); i++)
-    {
-        if(mlayout[i].contains(pos))
-        {
-            if(area >= mlayout[i].height()*mlayout[i].width() )
-            {
-                ans = i;
-                area = mlayout[i].height()*mlayout[i].width();
-            }
-        }
-    }
 #ifdef DEBUG
     mmsg("ans" + QString::number(ans));
 #endif
-    return ans;
+
 }

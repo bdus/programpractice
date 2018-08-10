@@ -53,7 +53,7 @@ private:
     QPixmap m_loadPixmap, m_capturePixmap;
 //    int m_screenwidth;
 //    int m_screenheight;
-    bool myEdit;
+    //bool myEdit;
     QPainter m_painter;
 
 private slots:

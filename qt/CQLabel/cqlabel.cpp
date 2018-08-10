@@ -53,9 +53,11 @@ void CQLabel::initWindow()
         lie[i]->setGeometry(20+30*(2*i+1),0,30,20);
         tag[i]->show();
         lie[i]->show();
-        //connect(lie[i],SIGNAL(textEdited(QString)),this,SLOT(editTopBar()));
-        connect(lie[i],SIGNAL(textChanged(QString)),this,SLOT(editTopBar()));
+        connect(lie[i],SIGNAL(textEdited(QString)),this,SLOT(editTopBar()));
+        //connect(lie[i],SIGNAL(textChanged(QString)),this,SLOT(editTopBar()));
     }
+    connect(lie[2],SIGNAL(textChanged(QString)),this,SLOT(editTopBar()));
+    connect(lie[3],SIGNAL(textChanged(QString)),this,SLOT(editTopBar()));
 
     tag[4] = new QLabel(this);
     hlayout->addWidget(lie[4]);
@@ -66,18 +68,18 @@ void CQLabel::initWindow()
 
 void CQLabel::updateTopBar()
 {
-    myEdit = true;
+    //myEdit = true;
     QRect tmpre = m_MoveTo.translated(var_x,var_y);
     lie[0]->setText(QString::number(tmpre.x()));
     lie[1]->setText(QString::number(tmpre.y()));
     lie[2]->setText(QString::number(tmpre.width()));
     lie[3]->setText(QString::number(tmpre.height()));
-    myEdit = false;
+    //myEdit = false;
 }
 
 void CQLabel::editTopBar()
 {
-    if(m_selectedIndex != -1 && m_layout.empty() != true && myEdit == false)
+    if(m_selectedIndex != -1 && m_layout.empty() != true )//&& myEdit == false)
     {
 //        QRect *tmpre = new QRect(lie[0]->text().toInt(),lie[1]->text().toInt(),lie[2]->text().toInt(),lie[3]->text().toInt());
         m_selectedRect->setRect(lie[0]->text().toInt(),lie[1]->text().toInt(),lie[2]->text().toInt(),lie[3]->text().toInt());

@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-08-08T21:31:51
+# Project created by QtCreator 2018-08-11T20:21:35
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = CQLabel
+TARGET = file_struct
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -24,32 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    cqlabel.cpp \
-    camera.cpp
+        main.cpp
 
-HEADERS += \
-        mainwindow.h \
-    cqlabel.h \
-    SampleImageCreator.h \
-    CameraEventPrinter.h \
-    ConfigurationEventPrinter.h \
-    ImageEventPrinter.h \
-    PixelFormatAndAoiConfiguration.h \
-    camera.h
+HEADERS +=
 
-INCLUDEPATH += D:\opencv\cv_contrib340\vscudanopy\install\include \
-D:\opencv\cv_contrib340\vscudanopy\install\include\opencv \
-D:\opencv\cv_contrib340\vscudanopy\install\include\opencv2 \
-    $$quote(D:\Program Files (x86)\led_sdk\Development\include)
-
-
-
-LIBS += D:\opencv\cv_contrib340\vscudanopy\install\x64\vc14\lib\opencv_world340d.lib \
-   $$quote(D:\Program Files (x86)\led_sdk\Development\lib\x64\*.lib)
-
-
-
-FORMS += \
-        mainwindow.ui
+FORMS +=

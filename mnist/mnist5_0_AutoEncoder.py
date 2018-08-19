@@ -95,9 +95,19 @@ for epoch in range(training_epochs):
             print("step %d ,loss %g"%(tmpi,myloss))
 
 encode_decode = sess.run(x_hat,feed_dict={x:mnist.test.images[:10]})
+
+
+
+plt.figure(1)
+plt.plot(epoch_list,loss_list/np.max(loss_list),'r-',label='loss')
+plt.legend()
+
+
 f, a = plt.subplots(2,10,figsize=(10,2))
 for i in range(10):
     a[0][i].imshow(np.reshape(mnist.test.images[i], (28, 28)))
     a[1][i].imshow(np.reshape(encode_decode[i], (28, 28)))
+
 plt.show()
+plt.waitforbuttonpress()
 

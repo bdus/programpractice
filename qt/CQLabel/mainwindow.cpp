@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lineEdit_3,SIGNAL(textEdited(QString)),clabel->lie[2],SLOT(setText(QString)));
     connect(ui->lineEdit_4,SIGNAL(textEdited(QString)),clabel->lie[3],SLOT(setText(QString)));
 
+
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +47,20 @@ MainWindow::~MainWindow()
 void MainWindow::initWindow()
 {
 
+}
+
+void MainWindow::initCamSDK()
+{
+    CameraParameter para;
+    Camera camera(para);
+    string path = "test_opencv.tiff";
+    for (int i = 0; i < 5; i++) {
+        camera.parameter.Width += 100;
+        Mat CvImage;
+        camera.CaptueCVImageRandom(CvImage);
+        ostringstream os;
+        os << "test_opencv" << i << ".tiff";
+        imwrite(os.str(), CvImage);
 }
 
 //void MainWindow::updateSelectRect(int index)

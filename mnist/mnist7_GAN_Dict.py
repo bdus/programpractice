@@ -30,7 +30,7 @@ import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 # Training Params
-num_steps = 100000
+num_steps = 1000000
 batch_size = 128
 learning_rate = 0.0002
 
@@ -176,4 +176,3 @@ for i in range(10):
         a[j][i].imshow(img)
 
 plt.show()
-

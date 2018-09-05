@@ -45,39 +45,47 @@ def glorot_init(shape):
     return tf.random_normal(shape=shape, stddev=1. / tf.sqrt(shape[0] / 2.))
 
 # Store layers weight & bias
-weights = {
-    'gen_hidden1': tf.Variable(glorot_init([noise_dim, gen_hidden_dim])),
-    'gen_out': tf.Variable(glorot_init([gen_hidden_dim, image_dim])),
-    'disc_hidden1': tf.Variable(glorot_init([image_dim, disc_hidden_dim])),
-    'disc_out': tf.Variable(glorot_init([disc_hidden_dim, 1])),
-}
-biases = {
-    'gen_hidden1': tf.Variable(tf.zeros([gen_hidden_dim])),
-    'gen_out': tf.Variable(tf.zeros([image_dim])),
-    'disc_hidden1': tf.Variable(tf.zeros([disc_hidden_dim])),
-    'disc_out': tf.Variable(tf.zeros([1])),
-}
 
+
+def getWeights(shape,name):
+    return tf.get_variable(name=name,shape=shape,initializer=tf.contrib.layers.xavier_initializer())
+    #return tf.Variable(glorot_init(shape))
+
+def getBiases(shape,name):
+    return tf.get_variable(name=name,shape=shape,initializer=tf.constant_initializer(0))
+    #return tf.Variable(tf.zeros(shape))
 
 # Generator
 def generator(x):
-    hidden_layer = tf.matmul(x, weights['gen_hidden1'])
-    hidden_layer = tf.add(hidden_layer, biases['gen_hidden1'])
-    hidden_layer = tf.nn.relu(hidden_layer)
-    out_layer = tf.matmul(hidden_layer, weights['gen_out'])
-    out_layer = tf.add(out_layer, biases['gen_out'])
-    out_layer = tf.nn.sigmoid(out_layer)
-    return out_layer
+    with tf.variable_scope('Generator') as scope:
+        w1 = getWeights([noise_dim, gen_hidden_dim],'Gw1')
+        b1 = getBiases([gen_hidden_dim],'Gb1')
+        hidden_layer = tf.matmul(x, w1)
+        hidden_layer = tf.add(hidden_layer, b1)
+        hidden_layer = tf.nn.relu(hidden_layer)
+        w2 = getWeights([gen_hidden_dim, image_dim],'Gw2')
+        b2 = getBiases([image_dim],'Gb2')
+        out_layer = tf.matmul(hidden_layer, w2)
+        out_layer = tf.add(out_layer, b2)
+        out_layer = tf.nn.sigmoid(out_layer)
+        return out_layer
 
 
 # Discriminator
-def discriminator(x):
-    hidden_layer = tf.matmul(x, weights['disc_hidden1'])
-    hidden_layer = tf.add(hidden_layer, biases['disc_hidden1'])
-    hidden_layer = tf.nn.relu(hidden_layer)
-    out_layer = tf.matmul(hidden_layer, weights['disc_out'])
-    out_layer = tf.add(out_layer, biases['disc_out'])
-    out_layer = tf.nn.sigmoid(out_layer)
+def discriminator(x ,reuse=False):
+    with tf.variable_scope('Discriminator') as scope:
+        if reuse:
+            scope.reuse_variables()
+        w1 = getWeights([image_dim, disc_hidden_dim],'Dw1')
+        b1 = getBiases([disc_hidden_dim],'Db1')
+        w2 = getWeights([disc_hidden_dim, 1],'Dw2')
+        b2 = getBiases([1],'Db2')
+        hidden_layer = tf.matmul(x, w1)
+        hidden_layer = tf.add(hidden_layer, b1)
+        hidden_layer = tf.nn.relu(hidden_layer)
+        out_layer = tf.matmul(hidden_layer, w2)
+        out_layer = tf.add(out_layer, b2)
+        out_layer = tf.nn.sigmoid(out_layer)
     return out_layer
 
 # Build Networks
@@ -90,7 +98,7 @@ gen_sample = generator(gen_input)
 
 # Build 2 Discriminator Networks (one from noise input, one from generated samples)
 disc_real = discriminator(disc_input)
-disc_fake = discriminator(gen_sample)
+disc_fake = discriminator(gen_sample,reuse=True)
 
 # Build Loss
 gen_loss = -tf.reduce_mean(tf.log(disc_fake))
@@ -104,11 +112,9 @@ optimizer_disc = tf.train.AdamOptimizer(learning_rate=learning_rate)
 # By default in TensorFlow, all variables are updated by each optimizer, so we
 # need to precise for each one of them the specific variables to update.
 # Generator Network Variables
-gen_vars = [weights['gen_hidden1'], weights['gen_out'],
-            biases['gen_hidden1'], biases['gen_out']]
+gen_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,scope='Generator')
 # Discriminator Network Variables
-disc_vars = [weights['disc_hidden1'], weights['disc_out'],
-            biases['disc_hidden1'], biases['disc_out']]
+disc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,scope='Discriminator')
 
 # Create training operations
 train_gen = optimizer_gen.minimize(gen_loss, var_list=gen_vars)
@@ -176,4 +182,3 @@ for i in range(10):
         a[j][i].imshow(img)
 
 plt.show()
-

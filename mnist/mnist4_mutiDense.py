@@ -12,10 +12,7 @@ Created on Thu Aug 11 21:42:01 2018
 import tensorflow as tf
 import input_data
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
-=======
 import numpy as np
->>>>>>> dev
 
 ## dataset
 
@@ -79,15 +76,9 @@ for i in range(20000):
         print("step %d ,acc %g"%(i,myacc))
 
 
-<<<<<<< HEAD
-# fig = plt.gcf()
-# plt.plot(epoch_list,loss_list,label='loss')
-# plt.show
-=======
 plt.figure(1)
 plt.plot(epoch_list,loss_list/np.max(loss_list),'r-',label='loss')
 
 plt.plot(epoch_list,acc_list,'b-',label='acc')
 plt.legend()
 plt.show()
->>>>>>> dev

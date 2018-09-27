@@ -35,7 +35,7 @@ y = tf.placeholder("float",[None,10])
 
 W1 = weight_variable([784,256])
 b1 = bias_variable([256])
-h1 = tf.nn.softmax((tf.matmul(x,W1) + b1))
+h1 = tf.nn.relu((tf.matmul(x,W1) + b1))
 
 W2 = weight_variable([256,10])
 b2 = bias_variable([10])

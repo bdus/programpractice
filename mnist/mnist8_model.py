@@ -95,7 +95,8 @@ class myClassifyer():
         cross_entropy = -tf.reduce_sum(self.label*tf.log(self.predict))
         self.cross_entropy = cross_entropy
         #train
-        optimizer = tf.train.AdamOptimizer(self.learning_rate)
+        #optimizer = tf.train.AdamOptimizer(self.learning_rate)
+        optimizer = tf.train.GradientDescentOptimizer(self.learning_rate)
         self.train_step = optimizer.minimize(self.cross_entropy)
         #acc
         correct_prediction = tf.equal(tf.argmax(self.label,1),tf.argmax(self.predict,1))
@@ -154,14 +155,14 @@ class myClassifyer():
 def main():
 
    
-    modle = myClassifyer(mutiDense())
-    modle.train()  
+    # modle = myClassifyer(mutiDense())
+    # modle.train()  
 
-    # method2 = mutiCNN()
-    # method2.isTrain = True
-    # # method2.epoch = 50
-    # modle2 = myClassifyer(method2) 
-    # modle2.train()
+    method2 = mutiCNN()
+    method2.isTrain = True
+    # method2.epoch = 50
+    modle2 = myClassifyer(method2) 
+    modle2.train()
 
 if __name__ == '__main__':
     main()

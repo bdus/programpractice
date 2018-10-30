@@ -61,7 +61,9 @@ void MainWindow::initCamSDK()
         ostringstream os;
         os << "test_opencv" << i << ".tiff";
         imwrite(os.str(), CvImage);
+        }
 }
+
 
 //void MainWindow::updateSelectRect(int index)
 //{

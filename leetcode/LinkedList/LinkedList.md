@@ -130,7 +130,58 @@ struct ListNode* reverseList(struct ListNode* head) {
 }
 ```
 
+官方C++版本
+
+```cpp
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        stack<ListNode*> sc;
+        while (head!=NULL) {
+            sc.push(head);
+            head = head->next;
+        }
+        
+        ListNode* sol = new ListNode(-1);
+        head = sol;
+        while(!sc.empty()) {
+            sol->next = sc.top();
+            sol->next->next = NULL;
+            sc.pop();
+            sol = sol->next;
+        }
+        return head->next;
+    }
+};
+```
+
 ## 876. Middle of the Linked List
 
 Problem [[link]](https://leetcode.com/problems/middle-of-the-linked-list/de
 
+```cpp
+ListNode* middleNode(ListNode* head) {
+    typedef struct ListNode * llist;
+    vector<llist> a;
+    int length = 0;
+
+    if(NULL == head)
+        return head;
+    while(NULL != head)    
+    {
+        length++;
+        a.push_back(head);
+        head = head->next;
+    }
+    return a[(int)(length/2)];
+}
+```

@@ -1,6 +1,8 @@
 /*
     bdus@Oct/2 2018
 
+    g++ -o out -std=c++11 singly_linked_list.cpp
+
     https://en.wikipedia.org/wiki/Linked_list#Singly_linked_list
 
     https://leetcode.com/problems/middle-of-the-linked-list/description/
@@ -10,6 +12,7 @@
 
 #include<iostream>
 #include<vector>
+#include<stdlib.h>
 
 using namespace std;
 
@@ -64,6 +67,14 @@ ListNode* middleNode(ListNode* head) {
     }
     return a[(int)(length/2)];
 }
+void deleteNode(ListNode* node) {
+    //*node = *node->next;
+    ListNode* temp = node->next;
+    node->val = node->next->val;
+    node->next = temp->next;
+    delete temp;
+}
+
 int main()
 {
     int list_init[] = {0,1,2,3,4,5,6,7,8,9};
@@ -82,8 +93,10 @@ int main()
     }
     print(head);
     //print(reverseList(head));
-    print(middleNode(head));
-    
+    //print(middleNode(head));
+    deleteNode(head);
+    cout << '\n';
+    print(head);
 
 
     return 0;

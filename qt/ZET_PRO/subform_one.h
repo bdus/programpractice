@@ -9,7 +9,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <QLabel>
-
+#include <QFileDialog>
+#include <QString>
 
 #include "algorithms.h"
 
@@ -24,7 +25,9 @@ class SubForm_one : public QWidget
     Q_OBJECT
 
 public:
-    explicit SubForm_one(QWidget *parent = 0);
+    //explicit SubForm_one(QWidget *parent = 0);
+    explicit SubForm_one(QWidget *parent = 0 , FP_type fp_type = FPt_gray, Data_type data_type = Video);
+
     ~SubForm_one();
 
     void InitVideo(String filename);
@@ -34,6 +37,7 @@ public:
 
 private slots:
     void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
 
 private:
 
@@ -41,10 +45,10 @@ private:
     QPixmap cvMatToQPixmap( const cv::Mat &inMat );
 
     Ui::SubForm_one *ui;
-
+    FP_type fp;
+    Data_type dp;
     VideoCapture capture;
-
-
+    QString file_path;
 };
 
 #endif // SUBFORM_ONE_H

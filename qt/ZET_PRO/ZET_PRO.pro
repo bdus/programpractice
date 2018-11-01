@@ -28,14 +28,17 @@ SOURCES += \
         mainwindow.cpp \
     subform_one.cpp \
     algorithminstance.cpp \
-    rgb2gray.cpp
+    rgb2gray.cpp \
+    fp_noise.cpp
 
 HEADERS += \
         mainwindow.h \
     subform_one.h \
     algorithminstance.h \
     rgb2gray.h \
-    algorithms.h
+    algorithms.h \
+    fp_noise.h \
+    guidedFilter.hpp
 
 FORMS += \
         mainwindow.ui \

@@ -20,7 +20,7 @@ void MainWindow::InitSubForms()
     //load forms
     ui->listWidget->clear();
 
-    QStringList btn_name = {"gray"};
+    QStringList btn_name = {"video_gray","video_noise"};
     ui->listWidget->addItems(btn_name);
 
     QListWidgetItem * item_p;
@@ -42,10 +42,12 @@ void MainWindow::InitSubForms()
 
     //装载页面
 
-    Page_one = new SubForm_one(this);
+    SubForm_one * Page_one = new SubForm_one(this);
+    SubForm_one * Page_two = new SubForm_one(this,FPt_noise);
 
 
     ui->stackedWidget->addWidget(Page_one);
+    ui->stackedWidget->addWidget(Page_two);
     //ui->stackedWidget->addWidget(Page_two);
 
     ui->stackedWidget->setCurrentWidget(Page_one);

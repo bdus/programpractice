@@ -27,7 +27,7 @@ private slots:
 private:
 
     void InitSubForms();
-    SubForm_one * Page_one;
+    //SubForm_one * Page_one;
 
 
     Ui::MainWindow *ui;

@@ -29,7 +29,10 @@ SOURCES += \
     subform_one.cpp \
     algorithminstance.cpp \
     rgb2gray.cpp \
-    fp_noise.cpp
+    fp_noise.cpp \
+    fp_fog.cpp \
+    HazeRemover.cpp \
+    fp_night.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +41,10 @@ HEADERS += \
     rgb2gray.h \
     algorithms.h \
     fp_noise.h \
-    guidedFilter.hpp
+    guidedFilter.hpp \
+    fp_fog.h \
+    HazeRemover.h \
+    fp_night.h
 
 FORMS += \
         mainwindow.ui \

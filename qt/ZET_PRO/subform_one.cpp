@@ -30,9 +30,12 @@ SubForm_one::SubForm_one(QWidget *parent, FP_type fp_type, Data_type data_type) 
     case FPt_noise:
         frameProcessor = new FP_noise();
         break;
-//    case FP_noise:
-//        frameProcessor = new FP_noise();
-//        break;
+    case FPt_fog:
+        frameProcessor = new FP_fog();
+        break;
+    case FPt_night:
+        frameProcessor = new FP_night();
+        break;
 //    case FP_noise:
 //        frameProcessor = new FP_noise();
 //        break;
@@ -55,6 +58,7 @@ SubForm_one::SubForm_one(QWidget *parent, FP_type fp_type, Data_type data_type) 
     {
         file_path = "./video/img.PNG";
         ui->label_path->setText(file_path);
+        //ui->progressBar->setDisabled(true);
     }
 
 }
@@ -174,11 +178,11 @@ void SubForm_one::play()
 
         cv::resize(frame, down, Size(frame.cols/4, frame.rows/4), INTER_CUBIC);//下采样
 
-        frameProcessor->frameProcess(down,dest);
-
         tmp = cvMatToQPixmap(down);
         tmp.scaled(ui->label_src->size(),Qt::KeepAspectRatio);
         ui->label_src->setPixmap(tmp);
+
+        frameProcessor->frameProcess(down,dest);
 
         //cv::resize(dest, tmp, Size(frame.cols, frame.rows), INTER_CUBIC);//上采样
         tmp = cvMatToQPixmap(dest);
@@ -190,6 +194,42 @@ void SubForm_one::play()
     }
 
     cv::destroyWindow("play");
+}
+
+void SubForm_one::InitImage(String filename)
+{
+    frImage = cv::imread(filename);
+//    if(true == frImage.empty()){
+//        qDebug() << "image empty" << '\n';
+//        return;
+//    }
+
+    ui->label_src->setScaledContents(true);
+    ui->label_dest->setScaledContents(true);
+
+}
+
+void SubForm_one::run( )
+{
+    Mat dest;
+    QPixmap tmp;
+
+    if(true == frImage.empty()){
+        qDebug() << "image empty" << '\n';
+        return;
+    }
+
+    frameProcessor->frameProcess(frImage,dest);
+
+    tmp = cvMatToQPixmap(frImage);
+    tmp.scaled(ui->label_src->size(), Qt::KeepAspectRatio);
+    ui->label_src->setPixmap(tmp);
+
+    //cv::resize(dest, tmp, Size(frame.cols, frame.rows), INTER_CUBIC);//上采样
+    tmp = cvMatToQPixmap(dest);
+    tmp.scaled(ui->label_dest->size(),Qt::KeepAspectRatio);
+    ui->label_dest->setPixmap(tmp);
+
 }
 
 void SubForm_one::on_pushButton_clicked()
@@ -206,7 +246,8 @@ void SubForm_one::on_pushButton_clicked()
     }
     else /*if (dp == Image)*/
     {
-        //
+        InitImage(file_path.toStdString());
+        run();
     }
 
 }

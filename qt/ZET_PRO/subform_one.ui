@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>PlayVideo</string>
+    <string>Run</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_src">
@@ -81,7 +81,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>OpenVideo</string>
+    <string>Open</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_path">

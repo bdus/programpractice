@@ -30,12 +30,10 @@ public:
 
     ~SubForm_one();
 
-    void InitVideo(String filename);
-    void play();
-
     AlgorithmInstance * frameProcessor;
 
 private slots:
+
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
 
@@ -44,10 +42,18 @@ private:
     QImage  cvMatToQImage( const cv::Mat &inMat );
     QPixmap cvMatToQPixmap( const cv::Mat &inMat );
 
+    void InitVideo(String filename);
+    void play();
+    void InitImage(String filename);
+    void run();
+
+
     Ui::SubForm_one *ui;
+
     FP_type fp;
     Data_type dp;
     VideoCapture capture;
+    Mat frImage;
     QString file_path;
 };
 

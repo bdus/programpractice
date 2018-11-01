@@ -51,5 +51,10 @@ CMakeLists.txt.user*
 /qt/BaslerCamera/bin_debug
 *.zip
 qt/ZET_PRO/guidedFilter.hpp
+<<<<<<< HEAD
 qt/ZET_PRO/HazeRemover.h
 qt/ZET_PRO/HazeRemover.cpp
+=======
+qt/ZET_PRO/HazeRemover.cpp
+qt/ZET_PRO/HazeRemover.h
+>>>>>>> dev

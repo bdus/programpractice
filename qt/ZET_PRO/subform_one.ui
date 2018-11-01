@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>PlayVideo</string>
+    <string>Run</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_src">
@@ -55,20 +55,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>380</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
+    <string/>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_2">
@@ -81,7 +68,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>OpenVideo</string>
+    <string>Open</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_path">

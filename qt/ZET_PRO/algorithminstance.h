@@ -13,16 +13,16 @@ public:
 
     //算法处理fps ssim psnr 自行实现
 };
-//typedef enum{
-//    def = 0,
-//    FP_rain,
-//    FP_fog,
-//    FP_night,
-//    FP_lumen,
-//    FP_noise,
-//    FP_match,
-//    FP_gray
-//} FP_type;
+typedef enum{
+    //def = 0,
+    FPt_gray = 0,
+    FPt_rain,
+    FPt_fog,
+    FPt_night,
+    FPt_lumen,
+    FPt_noise,
+    FPt_match
+} FP_type;
 //class ScenceMatch
 //{
 //public:

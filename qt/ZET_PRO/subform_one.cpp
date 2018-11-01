@@ -58,7 +58,7 @@ SubForm_one::SubForm_one(QWidget *parent, FP_type fp_type, Data_type data_type) 
     {
         file_path = "./video/img.PNG";
         ui->label_path->setText(file_path);
-        //ui->progressBar->setDisabled(true);
+        ui->progressBar->hide();
     }
 
 }
@@ -237,7 +237,7 @@ void SubForm_one::on_pushButton_clicked()
     //    Page_one->InitVideo("./video/fog.mp4");
     //    Page_one->frameProcessor = new rgb2gray();
 
-    ui->label->setText("");
+    //ui->label->setText("");
 
     if(dp == Video)
     {

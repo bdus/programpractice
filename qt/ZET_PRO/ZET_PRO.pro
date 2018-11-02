@@ -32,7 +32,9 @@ SOURCES += \
     fp_noise.cpp \
     fp_fog.cpp \
     HazeRemover.cpp \
-    fp_night.cpp
+    fp_night.cpp \
+    fp_lumen.cpp \
+    fp_rain.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,7 +46,9 @@ HEADERS += \
     guidedFilter.hpp \
     fp_fog.h \
     HazeRemover.h \
-    fp_night.h
+    fp_night.h \
+    fp_lumen.h \
+    fp_rain.h
 
 FORMS += \
         mainwindow.ui \

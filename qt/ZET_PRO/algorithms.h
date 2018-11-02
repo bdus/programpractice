@@ -8,9 +8,12 @@ typedef enum{
 } Data_type;
 
 #include "algorithminstance.h"
+
 #include "rgb2gray.h"
 #include "fp_noise.h"
 #include "fp_fog.h"
 #include "fp_night.h"
+#include "fp_lumen.h"
+#include "fp_rain.h"
 
 #endif // ALGORITHMS_H

@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 typedef void (*frameProcessor)(cv::Mat & src, cv::Mat & dest);
 using namespace std;
-class AlgorithmInstance //场景匹配除外的5个算法
+class AlgorithmInstance //场景匹配除外的4个算法
 {
 public:
     AlgorithmInstance() = default;
@@ -12,6 +12,8 @@ public:
     virtual void frameProcess(cv::Mat & src, cv::Mat & dest) = 0;
 
     //算法处理fps ssim psnr 自行实现
+    //virtual double _fps_(String video_filepath);
+    //virtual double _your_metrics_(String video_filepath);
 };
 typedef enum{
     //def = 0,
@@ -23,12 +25,13 @@ typedef enum{
     FPt_noise,
     FPt_match
 } FP_type;
-//class ScenceMatch
-//{
-//public:
-//    ScenceMatch() = default;
-//    virtual ~ScenceMatch() = default;
-//    virtual vector<FP_type> process(cv::Mat & ,cv::Mat & ,cv::Mat & ) = 0;
-//};
+
+class ScenceMatch
+{
+public:
+    ScenceMatch() = default;
+    virtual ~ScenceMatch() = default;
+    virtual vector<FP_type> process(cv::Mat & f1, cv::Mat &f2, cv::Mat & f3) = 0;
+};
 
 #endif // ALGORITHMINSTANCE_H

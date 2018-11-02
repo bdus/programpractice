@@ -53,3 +53,5 @@ CMakeLists.txt.user*
 qt/ZET_PRO/guidedFilter.hpp
 qt/ZET_PRO/HazeRemover.cpp
 qt/ZET_PRO/HazeRemover.h
+qt/ZET_PRO/fp_rain.cpp
+qt/ZET_PRO/fp_lumen.cpp

@@ -21,14 +21,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+//private slots:
     //void PageShift();
 
 private:
 
     void InitSubForms();
-    //SubForm_one * Page_one;
-
 
     Ui::MainWindow *ui;
 

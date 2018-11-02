@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    cv::destroyAllWindows();
 }
 
 void MainWindow::InitSubForms()
@@ -25,6 +27,8 @@ void MainWindow::InitSubForms()
         "video_noise",
         "video_fog",
         "video_night",
+        "video_lumen",
+        "video_rain",
         "image_gray"
     };
     ui->listWidget->addItems(btn_name);
@@ -48,6 +52,9 @@ void MainWindow::InitSubForms()
     ui->stackedWidget->addWidget(new SubForm_one(this,FPt_noise));
     ui->stackedWidget->addWidget(new SubForm_one(this,FPt_fog));
     ui->stackedWidget->addWidget(new SubForm_one(this,FPt_night));
+    ui->stackedWidget->addWidget(new SubForm_one(this,FPt_lumen));
+    ui->stackedWidget->addWidget(new SubForm_one(this,FPt_rain));
+
     ui->stackedWidget->addWidget(new SubForm_one(this,FPt_gray,Image));
 
     //ui->stackedWidget->addWidget(Page_two);

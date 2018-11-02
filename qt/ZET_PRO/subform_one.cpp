@@ -36,9 +36,12 @@ SubForm_one::SubForm_one(QWidget *parent, FP_type fp_type, Data_type data_type) 
     case FPt_night:
         frameProcessor = new FP_night();
         break;
-//    case FP_noise:
-//        frameProcessor = new FP_noise();
-//        break;
+    case FPt_lumen:
+        frameProcessor = new FP_lumen();
+        break;
+    case FPt_rain:
+        frameProcessor = new FP_rain();
+        break;
 //    case FP_noise:
 //        frameProcessor = new FP_noise();
 //        break;
@@ -65,8 +68,7 @@ SubForm_one::SubForm_one(QWidget *parent, FP_type fp_type, Data_type data_type) 
 
 SubForm_one::~SubForm_one()
 {
-    delete ui;
-
+    delete ui;    
 }
 
 void SubForm_one::InitVideo(String filename /*,FP_gray type*/)
@@ -170,7 +172,7 @@ void SubForm_one::play()
         if(true == frame.empty()) break;
 
         //long nowFrame=static_cast<long>();
-        int nowFrame = capture.get(CV_CAP_PROP_POS_FRAMES) ;
+        int nowFrame = capture.get(CV_CAP_PROP_POS_FRAMES);
         //double ratio =  static_cast<float>(nowFrame/(float)nFrame);
         //ui->label->setText("percent : " + QString::number(ratio*100));
         ui->progressBar->setValue(nowFrame);

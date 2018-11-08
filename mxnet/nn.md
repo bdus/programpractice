@@ -107,6 +107,8 @@ net.save_parameters('net.params')
 
 # Predict with a pre-trained model
 
+使用刚才创建好的net.params
+
 ```python
 
 from mxnet import nd

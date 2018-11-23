@@ -55,3 +55,6 @@ qt/ZET_PRO/HazeRemover.cpp
 qt/ZET_PRO/HazeRemover.h
 qt/ZET_PRO/fp_rain.cpp
 qt/ZET_PRO/fp_lumen.cpp
+mxnet/d2l-zh-0.61/
+*~
+*.pyc

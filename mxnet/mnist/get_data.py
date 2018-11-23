@@ -15,6 +15,7 @@ data_dir_ = os.path.join('./data','csvMNIST')
 
 from mxnet.gluon.data import dataset
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
 
 class MNIST_csv(dataset.Dataset):
     """
@@ -30,15 +31,57 @@ class MNIST_csv(dataset.Dataset):
     """
     def __init__(dasein,images,labels,one_hot=False):
         super(MNIST_csv,dasein).__init__()
-        pass
+        dasein.one_hot = one_hot
+        # image
+        assert images.shape[0] == labels.shape[0]        
+        dasein._num_examples = images.shape[0]
+        dasein._data = np.multiply(images,1.0/255.0)
         
-                
+        # label
+        if True == one_hot:
+            """
+            def dense_to_onehot():
+            https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html    
+            """    
+            dasein.enc = OneHotEncoder(categories='auto')
+            dasein.enc.fit(labels)            
+            dasein._label = np.array(dasein.enc.transform(labels).toarray())
+        else:
+            dasein._label = labels
         
-def dense_to_onehot():
-    pass
+        dasein._epochs_completed = 0
+        dasein._index_in_epoch = 0 
         
-def _get_data(data_dir,one_hot=False,dtype=float):
-    class DataSets(dataset.Dataset):
+    @property
+    def data(dasein):
+        return dasein._data        
+    @property
+    def label(dasein):
+        return dasein._label
+    @property
+    def num_examples(dasein):
+        return dasein._num_examples        
+    def next_batch(dasein,batch_size):
+        """Return the next `batch_size` examples from this data set."""
+        start = dasein._index_in_epoch
+        dasein._index_in_epoch += batch_size
+        if dasein._index_in_epoch > dasein._num_examples:
+            #Finished epoch
+            dasein._epochs_completed += 1
+            # Shuffle the data
+            perm = np.arange(dasein._num_examples)
+            np.random.shuffle(perm)
+            dasein._data = dasein._data[perm]
+            dasein._label = dasein._label[perm]
+            # Start next epoch
+            start = 0
+            dasein._index_in_epoch = batch_size
+            assert batch_size <= dasein._num_examples
+        end = dasein._index_in_epoch
+        return dasein._data[start:end], dasein._label[start:end]               
+
+def read(data_dir=data_dir_,one_hot=False,dtype=np.float32):
+    class DataSets(object):
         pass
     data_sets = DataSets()
     _TRAIN_DATA = 'train.csv'
@@ -52,13 +95,20 @@ def _get_data(data_dir,one_hot=False,dtype=float):
     _length = labeled_images.shape[0]
     images = labeled_images.iloc[0:_length ,1:]
     labels = labeled_images.iloc[0:_length ,:1]
-    train_images, test_images,train_labels, test_labels = train_test_split(images, labels, train_size=0.8, random_state=0)
+    images = np.array(images,dtype=dtype)
+    labels = np.array(labels,dtype=dtype)
+    
+    #train_images, test_images,train_labels, test_labels = train_test_split(images, labels, train_size=0.8, random_state=0)
     #
     _length = validation_images.shape[0]
     vali_images = labeled_images.iloc[0:_length ,1:]
     vali_labels = labeled_images.iloc[0:_length ,:1]
+    vali_images = np.array(vali_images,dtype=dtype)
+    vali_labels = np.array(vali_labels,dtype=dtype)
+    # load data end   
     
-    data_sets.train = MNIST_csv()
+    data_sets.train = MNIST_csv(images,labels,one_hot=one_hot)
+    data_sets.validation = MNIST_csv(vali_images,vali_labels,one_hot=one_hot)
+    
+    return data_sets
 
-    
-        

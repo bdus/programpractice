@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 22 22:03:58 2018
-
 @author: bdus
 """
 import os
@@ -17,43 +16,40 @@ from mxnet.gluon.data import dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
-class MNIST_csv(dataset._DownloadedDataset):
+class MNIST_csv(dataset.Dataset):
     """
     @Description
         create MNIST dataset from csv files.
         https://www.kaggle.com/c/digit-recognizer
     
     @base model 
-        mxnet.gluon.data.dataset.Dataset        
+        mxnet.gluon.data.dataset.Dataset
         detailed:
         https://mxnet.incubator.apache.org/_modules/mxnet/gluon/data/dataset.html#Dataset
-        
     
     """
-    def __init__(dasein,images,labels,one_hot=False,transform=None):        
+    def __init__(dasein,images,labels,one_hot=False):
+        super(MNIST_csv,dasein).__init__()
         dasein.one_hot = one_hot
         # image
         assert images.shape[0] == labels.shape[0]        
         dasein._num_examples = images.shape[0]
         dasein._data = np.multiply(images,1.0/255.0)
+        
         # label
         if True == one_hot:
             """
             def dense_to_onehot():
-            https://www.cnblogs.com/wxshi/p/8645600.html
             https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html    
             """    
             dasein.enc = OneHotEncoder(categories='auto')
             dasein.enc.fit(labels)            
             dasein._label = np.array(dasein.enc.transform(labels).toarray())
         else:
-            dasein._label = labels        
+            dasein._label = labels
+        
         dasein._epochs_completed = 0
         dasein._index_in_epoch = 0 
-        super(MNIST_csv,dasein).__init__(data_dir_,transform) 
-        
-    def _get_data(dasein):
-        
         
     @property
     def data(dasein):
@@ -81,16 +77,7 @@ class MNIST_csv(dataset._DownloadedDataset):
             dasein._index_in_epoch = batch_size
             assert batch_size <= dasein._num_examples
         end = dasein._index_in_epoch
-        return dasein._data[start:end], dasein._label[start:end]
-    
-    def __len__(dasein):
-        return len(dasein._label)
-    
-    def __getitem__(dasein, idx):
-        if dasein._transform is not None:
-            return dasein._transform(dasein._data[idx], dasein._label[idx])
-        return dasein._data[idx], dasein._label[idx]  
-           
+        return dasein._data[start:end], dasein._label[start:end]               
 
 def read(data_dir=data_dir_,one_hot=False,dtype=np.float32):
     class DataSets(object):
@@ -123,4 +110,3 @@ def read(data_dir=data_dir_,one_hot=False,dtype=np.float32):
     data_sets.validation = MNIST_csv(vali_images,vali_labels,one_hot=one_hot)
     
     return data_sets
-

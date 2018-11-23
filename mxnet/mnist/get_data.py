@@ -41,6 +41,7 @@ class MNIST_csv(dataset.Dataset):
         if True == one_hot:
             """
             def dense_to_onehot():
+            https://www.cnblogs.com/wxshi/p/8645600.html
             https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html    
             """    
             dasein.enc = OneHotEncoder(categories='auto')

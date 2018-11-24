@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 22 22:03:58 2018
-
 @author: bdus
 """
 import os
@@ -111,4 +110,3 @@ def read(data_dir=data_dir_,one_hot=False,dtype=np.float32):
     data_sets.validation = MNIST_csv(vali_images,vali_labels,one_hot=one_hot)
     
     return data_sets
-

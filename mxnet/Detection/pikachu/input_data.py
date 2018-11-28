@@ -41,7 +41,7 @@ def _maybe_download_pikachu(data_dir):
 #        gutils.download(root_url + k, os.path.join(data_dir_, k), sha1_hash=v)
        
 def load_data_pikachu(batch_size, edge_size=256):  # edge_size：输出图像的宽和高。
-    data_dir = '../data/pikachu'
+    data_dir = '/home/sans/.mxnet/datasets/pikachu'
     _maybe_download_pikachu(data_dir)
     train_iter = image.ImageDetIter(
         path_imgrec=os.path.join(data_dir, 'train.rec'),
@@ -61,7 +61,7 @@ def load_data_pikachu(batch_size, edge_size=256):  # edge_size：输出图像的
 #train_iter, _ = load_data_pikachu(batch_size, edge_size)
 #batch = train_iter.next()
 #batch.data[0].shape, batch.label[0].shape
-#
+
 #imgs = (batch.data[0][0:10].transpose((0, 2, 3, 1))) / 255
 #axes = gb.show_images(imgs, 2, 5).flatten()
 #for ax, label in zip(axes, batch.label[0][0:10]):

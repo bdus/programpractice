@@ -97,16 +97,17 @@ def read(data_dir=data_dir_,one_hot=False,dtype=np.float32):
     images = np.array(images,dtype=dtype)
     labels = np.array(labels,dtype=dtype)
     
-    #train_images, test_images,train_labels, test_labels = train_test_split(images, labels, train_size=0.8, random_state=0)
+    train_images, test_images,train_labels, test_labels = train_test_split(images, labels, train_size=0.8, random_state=0)
     #
     _length = validation_images.shape[0]
-    vali_images = labeled_images.iloc[0:_length ,1:]
-    vali_labels = labeled_images.iloc[0:_length ,:1]
+    vali_images = validation_images.iloc[0:_length ,:]    
     vali_images = np.array(vali_images,dtype=dtype)
-    vali_labels = np.array(vali_labels,dtype=dtype)
+    vali_labels = np.zeros((_length,1),dtype=dtype)
+    
     # load data end   
     
-    data_sets.train = MNIST_csv(images,labels,one_hot=one_hot)
+    data_sets.train = MNIST_csv(train_images,train_labels,one_hot=one_hot)
+    data_sets.test = MNIST_csv(test_images,test_labels,one_hot=one_hot)
     data_sets.validation = MNIST_csv(vali_images,vali_labels,one_hot=one_hot)
     
     return data_sets

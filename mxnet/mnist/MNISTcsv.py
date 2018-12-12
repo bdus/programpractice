@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 22 22:03:58 2018
-
 @author: bdus
+
+@description:
+仿照官方[MNIST](https://mxnet.incubator.apache.org/_modules/mxnet/gluon/data/vision/datasets.html#MNIST)源代码写的csvMNIST
+主要是为了熟悉gluon的dataset
 """
 import os
 import sys
@@ -44,7 +47,17 @@ class MNIST_csv(dataset._DownloadedDataset):
         dasein._index_in_epoch = 0 
         super(MNIST_csv,dasein).__init__(data_dir_,transform) 
         
-    def _get_data(dasein):        
+    
+    """
+    这个函数是因为该类继承于_DownloadedDataset[link](https://mxnet.incubator.apache.org/_modules/mxnet/gluon/data/dataset.html#Dataset)
+    执行super(MNIST_csv,dasein).__init__(data_dir_,transform) 的时候
+     会将data和label初始化在
+     self._data = None 
+      和
+     self._label = None
+      中     
+    """     
+    def _get_data(dasein):       
         filenames =  [os.path.join(dasein.data_dir_,x) for x in [dasein._TRAIN_DATA,dasein._TEST_DATA]]
             
         filename = filenames[0]

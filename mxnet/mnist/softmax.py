@@ -16,7 +16,7 @@ from MNISTcsv import MNIST_csv
 from mxnet import autograd, gluon, init, nd
 from mxnet.gluon import nn, loss as gloss
 
-num_epochs = 5
+
 batch_size = 100
 
 # get data csv
@@ -30,7 +30,7 @@ val_data = gluon.data.DataLoader(dataset=mnist_val, batch_size=100,shuffle=False
 # network
 net = nn.Sequential()
 net.add(
-        nn.Dense(10)
+        nn.Dense(10)        
         )
 
 loss = gloss.SoftmaxCrossEntropyLoss()
@@ -47,7 +47,7 @@ def train(epochs):
     net.initialize(mx.init.Xavier(magnitude=2.24))
     trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.1})
     
-    for epoch in range(num_epochs):
+    for epoch in range(epochs):
         metric.reset()
         for i, (X, y) in enumerate(train_data):
             #X = nd.array(X)
@@ -66,5 +66,7 @@ def train(epochs):
         name, val_acc = test()
         print('[Epoch %d] Validation: %s=%f'%(epoch, name, val_acc))
     net.save_parameters('mnist.params') 
-                
-train(num_epochs)
+
+if __name__ == '__main__':
+    num_epochs = 5
+    train(num_epochs)

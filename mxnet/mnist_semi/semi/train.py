@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec 13 14:43:08 2018
-@author: bdus
-"""
+Created on Wed Dec 12 21:15:19 2018
 
+@author: bdus
+
+baseline:
+https://github.com/bdus/programpractice/blob/master/mxnet/mnist_baseline/softmax.py
+"""
 
 import _init_paths
 
@@ -36,18 +39,9 @@ val_data = gluon.data.DataLoader(dataset= gluon.data.vision.MNIST(train=False,tr
 
 
 # network
-#net = symbols.get_model('simple2',pretrained=True)
+net = symbols.get_model('mobilenet0.25',pretrained=True)
+
 modelname = 'mobilenet0.25'
-
-finetune_net = mzoo.get_model('mobilenet0.25',pretrained=True)
-with finetune_net.name_scope():
-    finetune_net.output = nn.Dense(10)
-finetune_net.output.initialize(init.Xavier(), ctx = ctx)
-finetune_net.collect_params().reset_ctx(ctx)
-finetune_net.hybridize()
-net = finetune_net
-
-net.load_parameters( os.path.join('symbols','para','%s.params'%(modelname)) )
 
 loss = gloss.SoftmaxCrossEntropyLoss()
 metric = mx.metric.Accuracy()
@@ -55,27 +49,25 @@ metric = mx.metric.Accuracy()
 def test():
     metric = mx.metric.Accuracy()
     for data, label in val_data:
-        if modelname == 'mobilenet0.25':
-            X = data.reshape((-1,1,28,28))
-            data = nd.concat(X,X,X,dim=1)
-        output = net(data)
+        X = data.reshape((-1,1,28,28))
+        img = nd.concat(X,X,X,dim=1)
+        output = net(img)
         metric.update([label], [output])
     return metric.get()
        
 def train(epochs):    
     #net.initialize(mx.init.Xavier(magnitude=2.24))
-    trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.1})
+    trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.01})
     
     for epoch in range(epochs):
         metric.reset()
         for i, (X, y) in enumerate(train_data):
             X = nd.array(X)
-            if modelname == 'mobilenet0.25':
-                X = X.reshape((-1,1,28,28))
-                X = nd.concat(X,X,X,dim=1)
+            X = X.reshape((-1,1,28,28))
+            img = nd.concat(X,X,X,dim=1)
             y = nd.array(y)
             with autograd.record():
-                output = net(X)
+                output = net(img)
                 L = loss(output,y)
                 L.backward()
             trainer.step(batch_size)
@@ -92,5 +84,5 @@ def train(epochs):
     net.save_parameters( os.path.join('symbols','para','%s.params'%(modelname)) )
 
 if __name__ == '__main__':
-    num_epochs = 100
+    num_epochs = 1000
     train(num_epochs)

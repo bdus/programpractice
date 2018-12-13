@@ -10,14 +10,15 @@ classifiction nets
 
 """
 from .simple import *
+from .finetuned import *
 
 __all__ = ['get_model', 'get_model_list']
 
 _models = {
     'simple0':simple0,
     'simple1':simple1,
-    'simple2':simple2
-    
+    'simple2':simple2,
+    'mobilenet0.25':ft_mobilenet0_25    
     }
 
 def get_model(name, **kwargs):

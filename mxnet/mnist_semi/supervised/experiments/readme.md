@@ -4,6 +4,9 @@
 使用的时候复制(可能需要稍加修改)到上级目录运行
 
 ## simple
+
+数据集MNIST
+
 folder:[simple](./simple)
 
 * train_simple.py
@@ -19,6 +22,8 @@ folder:[simple](./simple)
 
 ## finetune
 
+数据集MNIST
+
 folder:[finetune](./finetune)
 
 * train_finetune.py
@@ -26,3 +31,4 @@ folder:[finetune](./finetune)
 * model_zoo的mobilenet0.25
 
 使用gluoncv的模型在数据集上finetune 效果不错 gluoncv很好使
+

@@ -30,12 +30,7 @@ mnistcsv = get_data.read(one_hot=True)
 
 # get model
 
-#net = nn.Sequential()
-#net.add(
-#        nn.Dense(10)
-#        )
 net = symbols.get_model('simple0',pretrained=True)
-
 
 #net.load_parameters( os.path.join('symbols','para','simple0.params') )
 

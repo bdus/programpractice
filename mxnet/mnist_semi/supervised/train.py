@@ -25,20 +25,18 @@ from symbols import symbols
 batch_size = 100
 
 # get data csv
-mnist_train = MNIST_csv(train=True)
-mnist_val = MNIST_csv(train=False)
+#mnist_train = MNIST_csv(train=True)
+#mnist_val = MNIST_csv(train=False)
+#train_data = gluon.data.DataLoader(dataset=mnist_train, batch_size=100,shuffle=True,last_batch='discard')
+#val_data = gluon.data.DataLoader(dataset=mnist_val, batch_size=100,shuffle=False)
 
-train_data = gluon.data.DataLoader(dataset=mnist_train, batch_size=100,shuffle=True,last_batch='discard')
-val_data = gluon.data.DataLoader(dataset=mnist_val, batch_size=100,shuffle=False)
+transform=lambda data, label: (data.reshape(784,).astype(np.float32)/255, label)
+train_data = gluon.data.DataLoader(dataset= gluon.data.vision.MNIST(train=True,transform=transform), batch_size=100,shuffle=True,last_batch='discard')
+val_data = gluon.data.DataLoader(dataset= gluon.data.vision.MNIST(train=False,transform=transform), batch_size=100,shuffle=False)
 
 
 # network
-#net = nn.Sequential()
-#net.add(
-#        nn.Dense(10)        
-#        )
 net = symbols.get_model('simple0')
-
 
 loss = gloss.SoftmaxCrossEntropyLoss()
 metric = mx.metric.Accuracy()
@@ -56,9 +54,9 @@ def train(epochs):
     
     for epoch in range(epochs):
         metric.reset()
-        for i, (X, y) in enumerate(train_data):
-            #X = nd.array(X)
-            #y = nd.array(y)
+        for i, (X, y) in enumerate(train_data):            
+            X = nd.array(X)
+            y = nd.array(y)
             with autograd.record():
                 output = net(X)
                 L = loss(output,y)
@@ -72,7 +70,7 @@ def train(epochs):
         print('[Epoch %d] Training: %s=%f'%(epoch, name, acc))
         name, val_acc = test()
         print('[Epoch %d] Validation: %s=%f'%(epoch, name, val_acc))
-    net.save_parameters(os.path.join('symbols','para','simple0.params') )
+    net.save_parameters(os.path.join('symbols','para','simple0_fm.params') )
 
 if __name__ == '__main__':
     num_epochs = 10

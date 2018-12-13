@@ -14,7 +14,9 @@ from .simple import *
 __all__ = ['get_model', 'get_model_list']
 
 _models = {
-    'simple0':simple0
+    'simple0':simple0,
+    'simple1':simple1,
+    'simple2':simple2
     
     }
 

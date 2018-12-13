@@ -13,6 +13,8 @@ supervised 主要测试不同的分类模型
 
 目录结构参考dff系列代码
 
+symbols.py结构仿照gluon cv 的model_zoo
+
 ## semi
 
 semi 主要实现不同模型的半监督训练

@@ -100,8 +100,63 @@ print('after copy',para['sequential0_dense1_weight'].data()[0][0])
 
 #https://mxnet.incubator.apache.org/tutorials/gluon/customop.html?highlight=operator
 
-def para_liner(net,net2,x1,x2,b):
+def net_liner(net,net2,x1,x2,b):
     for (k, v) , (k2, v2) in zip( net.collect_params().items() , net2.collect_params().items() ):
         v.set_data(v2.data() * x1 + v.data() * x2 + b)
 
+def get_para(net):
+    """
+    net = nn.Sequential()
+    with net.name_scope():
+        net.add(nn.Dense(256,activation='relu'))
+        net.add(nn.Dense(10))
+    net.initialize()
     
+    x = nd.random.uniform(shape=(2,20))
+    y = net(x)
+    net[0].weight.data()[0]    
+    #
+    para = get_para(net)
+    para['sequential0_dense0_weight'][0]
+    """
+    para = {}
+    for k, v in net.collect_params().items():
+        para[k]= v.data()
+        print(k, v.data().size)
+    return para
+
+def set_net(net,para):
+    """
+    net = nn.Sequential()
+    with net.name_scope():
+        net.add(nn.Dense(256,activation='relu'))
+        net.add(nn.Dense(10))
+    net.initialize()
+    
+    x = nd.random.uniform(shape=(2,20))
+    y = net(x)
+    net[0].weight.data()[0]
+    
+    ## net2
+    net2 = nn.Sequential()
+    with net2.name_scope():
+        net2.add(nn.Dense(256,activation='relu'))
+        net2.add(nn.Dense(10))
+    net2.initialize(init=init.Constant(1),force_reinit=True)
+    #x = nd.random.uniform(shape=(2,20))
+    y = net2(x)
+    net2[0].weight.data()[0]
+    
+    para2 = get_para(net2)
+    set_net(net,para2)
+    net[0].weight.data()[0]
+        
+    """
+    for (k, v),(k2,v2) in zip( net.collect_params().items() , para.items() ):
+        v.set_data(v2)
+        print(k, v.data().size)
+
+def show_dict(para):
+    for k,v in para.items():
+        print(k, v.shape)
+   

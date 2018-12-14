@@ -18,13 +18,13 @@ import os
 import mxnet as mx
 import numpy as np
 import matplotlib.pyplot as plt
-from dataset.MNISTcsv import MNIST_csv
+#from dataset.MNISTcsv import MNIST_csv
 from gluoncv import model_zoo as mzoo
 
 from mxnet import autograd, gluon, init, nd
 from mxnet.gluon import nn, loss as gloss
 
-from symbols import symbols
+import symbols
 
 batch_size = 100
 stochastic_ratio = 0.01

@@ -23,7 +23,7 @@ import mxnet.ndarray as nd
 
 class Simple(HybridBlock):
     def __init__(self,index=0,**kwargs):
-        super(Simple, self).__init__(**kwargs)
+        super(Simple, self).__init__(**kwargs)        
         # use name_scope to give child Blocks appropriate names.
         self.index = index
         with self.name_scope():            
@@ -47,14 +47,21 @@ class Simple(HybridBlock):
                         nn.Dense(10)
                         )                
             else:
-                pass
-            
+                pass           
 
     def hybrid_forward(self, F, x):
         if self.index == 2:
             x = x.reshape((-1,1,28,28))
         x = self.output(x)
         return x
+    
+    def __getitem__(self, key):
+        return self.output[key]
+    
+    def __len__(self):
+        return len(self.output)
+
+
 
 def simple0(**kwargs):
     return get_simple(index=0,**kwargs)

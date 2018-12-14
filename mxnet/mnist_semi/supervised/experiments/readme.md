@@ -20,7 +20,7 @@ folder:[simple](./simple)
 
 仿照model_zoo目的是为了熟悉gluon和得到更好的修改模型 方便使用finetune过的网络
 
-## finetune
+## finetune baseline
 
 数据集MNIST
 
@@ -32,3 +32,20 @@ folder:[finetune](./finetune)
 
 使用gluoncv的模型在数据集上finetune 效果不错 gluoncv很好使
 
+## finetune simplify
+
+数据集MNIST
+
+仿照modelzoo结构改写 训练使用更加方便
+
+folder:[finetune_simplify](./finetune_simplify)
+
+
+* train_finetune.py
+* test_finetune.py
+* model_zoo的mobilenet0.25
+* symbols/finetuned.py
+
+```python
+net = symbols.get_model('mobilenet0.25',pretrained=True)
+```

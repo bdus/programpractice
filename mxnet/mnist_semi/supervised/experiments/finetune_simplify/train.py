@@ -57,7 +57,7 @@ def test():
        
 def train(epochs):    
     #net.initialize(mx.init.Xavier(magnitude=2.24))
-    trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.01})
+    trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.1})
     
     for epoch in range(epochs):
         metric.reset()

@@ -59,3 +59,8 @@ qt/ZET_PRO/fp_lumen.cpp
 mxnet/d2l-zh-0.61/
 *~
 *.pyc
+*.params
+out
+ou
+*.log
+savemodel

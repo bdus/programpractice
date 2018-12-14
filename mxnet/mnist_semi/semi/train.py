@@ -61,7 +61,7 @@ def test():
         metric.update([label], [output])
     return metric.get()
        
-def train(epochs):    
+def train(epochs,alpha):    
     #net.initialize(mx.init.Xavier(magnitude=2.24))
     trainer = gluon.Trainer(net.collect_params(),'sgd',{'learning_rate':0.1})
     
@@ -75,7 +75,7 @@ def train(epochs):
             with autograd.record():
                 output = net(g(X))
                 y2 = net(g(X))
-                L = l_logistic(output,y) + l_l2loss(y1,y2)
+                L = l_logistic(output,y) + alpha * l_l2loss(y1,y2) 
                 L.backward()
             trainer.step(batch_size)
             metric.update(y,output)            
@@ -91,5 +91,10 @@ def train(epochs):
     net.save_parameters( os.path.join('symbols','para','%s.params'%(modelname)) )
 
 if __name__ == '__main__':
-    num_epochs = 100
-    train(num_epochs)
+    num_epochs = 10
+    alpha = 0
+    train(20,0)
+    for i in range(10):
+        train(10,0.1*i)
+    train(100,1)
+    

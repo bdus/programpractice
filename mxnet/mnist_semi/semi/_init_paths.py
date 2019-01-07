@@ -18,6 +18,6 @@ lib_path = osp.join(this_dir, '..', 'lib')
 #data_path = osp.join(this_dir, '..''data')
 add_path(lib_path)
 #add_path(data_path)
-
-symbols_path = osp.join(this_dir, '..', 'supervised','symbols')
-add_path(symbols_path)
+#
+#symbols_path = osp.join(this_dir, '..', 'supervised','symbols')
+#add_path(symbols_path)

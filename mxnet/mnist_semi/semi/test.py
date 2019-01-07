@@ -14,6 +14,7 @@ import _init_paths
 
 import os
 import mxnet as mx
+import mxnet.ndarray as nd
 import numpy as np
 
 from dataset import get_data
@@ -30,16 +31,19 @@ ctx = mx.cpu() #[mx.gpu(i) for i in range(num_gpus)] if num_gpus > 0 else [mx.cp
 mnistcsv = get_data.read(one_hot=True)
 
 # get model
-modelname = 'mobilenet0.25'
+#modelname = 'mobilenet0.25'
+modelname = 'semi_mt_simple2'
 
+basemodel_zoo = 'simple2'
 
-net = symbols.get_model('mobilenet0.25',pretrained=True)
+net = symbols.get_model('simple2',pretrained=True)
+net.load_parameters( os.path.join('symbols','para','%s_t.params'%(modelname)) )
 
 for i in range(num_test_images):
     X,_ = mnistcsv.validation.next_batch(batch_size)
     X = nd.array(X)
     X = X.reshape((-1,1,28,28))
-    X = nd.concat(X,X,X,dim=1)
+    #X = nd.concat(X,X,X,dim=1)
     y = net(X)
     ans = y.argmax(axis=1).asnumpy()        
     print("%d-th type %d" % (i, ans))   
@@ -56,12 +60,12 @@ for i in range(num_test_images):
 9-th type 3
 '''
 # ===================== ====================
-#img_data = nd.array(mnistcsv.validation.data)
-#img_data = img_data.reshape((-1,1,28,28))
+img_data = nd.array(mnistcsv.validation.data)
+img_data = img_data.reshape((-1,1,28,28))
 #img_data = nd.concat(img_data,img_data,img_data,dim=1)
-#
-#y = net(img_data)
-#Label = y.argmax(axis=1).asnumpy().astype(np.int8)
-#Image = np.arange(len(Label)) +1
-#dataframe = pd.DataFrame({'ImageId':Image,'Label':Label})
-#dataframe.to_csv("myout1.csv",index=False,sep=',')
+
+y = net(img_data)
+Label = y.argmax(axis=1).asnumpy().astype(np.int8)
+Image = np.arange(len(Label)) +1
+dataframe = pd.DataFrame({'ImageId':Image,'Label':Label})
+dataframe.to_csv("myout1.csv",index=False,sep=',')

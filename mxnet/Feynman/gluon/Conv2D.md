@@ -48,3 +48,9 @@ ans = net(img)
 print(ans.shape)
 
 ```
+
+# batch, N*K, w,h
+
+## input 
+N = 10
+img = nd.ones((7,3*10,224,224))

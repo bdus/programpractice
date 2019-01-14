@@ -1,0 +1,64 @@
+https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository
+
+conda search python
+https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
+https://github.com/mzolfaghari/ECO-pytorch
+
+sudo nvidia-docker commit 42a946551c61 eco:pytorch
+
+ssh docker https://blog.csdn.net/u011552182/article/details/78650907
+
+sudo nvidia-docker run -it -p 5000:22 eco:pytorch /bin/bash
+ssh -p 5000 root@127.0.0.1
+
+sudo nvidia-docker build -t eco:dockerfile .
+
+sudo nvidia-docker run -it -p 127.0.0.1:5000:22/tcp -v `pwd`/UCF101:/workspace/data -v `pwd`/cache:/cache eco:dockerfile /bin/bash
+
+change img_ to image_
+
+apt-get install openssh-server
+vim /etc/ssh/sshd_config
+PermitRootLogin yes
+X11f.. yes
+/etc/init.d/ssh status
+/etc/init.d/ssh restart
+
+sudo nvidia-docker commit e3f0f3f2da36 eco:ucf101
+
+sudo nvidia-docker run -it -p 127.0.0.1:5000:22 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`/UCF101:/workspace/data -v `pwd`/cache:/cache eco:ucf101 /bin/bash
+
+conda install matplotlib
+sudo apt-get install x-window-system-core
+apt-get install x11-xserver-utils
+
+sudo nvidia-docker run -it -p 127.0.0.1:5000:22 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -e GDK_SCALE -e GDK_DPI_SCALE -v `pwd`/UCF101:/workspace/data -v `pwd`/cache:/cache eco:ucf101 /bin/bash
+
+
+python main.py ucf101 RGB <ucf101_rgb_train_list> <ucf101_rgb_val_list> \
+        --arch ECO --num_segments 4 --gd 5 --lr 0.001 --lr_steps 30 60 --epochs 80 \
+        -b 32 -i 1 -j 1 --dropout 0.8 --snapshot_pref ucf101_ECO --rgb_prefix img_ \
+        --consensus_type identity --eval-freq 1
+
+
+python main.py ucf101 RGB ./data/ucf101_rgb_train_split_1.txt ./data/ucf101_rgb_val_split_1.txt \
+        --arch ECO --num_segments 4 --gd 5 --lr 0.001 --lr_steps 30 60 --epochs 80 \
+        -b 32 -i 1 -j 1 --dropout 0.8 --snapshot_pref ucf101_ECO --rgb_prefix image_ \
+        --consensus_type identity --eval-freq 1 --gpus 0,1
+
+http://www.runoob.com/docker/docker-run-command.html
+
+
+sudo nvidia-docker run -it -p 127.0.0.1:5000:22 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -e GDK_SCALE -e GDK_DPI_SCALE -v `pwd`/UCF101:/workspace/data -v `pwd`/cache:/cache eco:ucf101 /bin/bash
+
+
+give up docker
+
+
+sudo nvidia-docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0,1 --shm-size 8G -it -p 127.0.0.1:5000:22 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -e GDK_SCALE -e GDK_DPI_SCALE -v `pwd`/UCF101:/workspace/data -v `pwd`/cache:/cache eco:ucf101_edit /bin/bash
+
+
+5098e9d43219
+
+python main.py ucf101 RGB ./data/ucf101_rgb_train_split_1.txt ./data/ucf101_rgb_val_split_1.txt         --arch ECO --num_segments 4 --gd 5 --lr 0.001 --lr_steps 30 60 --epochs 80         -b 32 -i 1 -j 1 --dropout 0.8 --snapshot_pref ucf101_ECO --rgb_prefix image_         --consensus_type identity --eval-freq 1  --pretrained_parts finetune 
+

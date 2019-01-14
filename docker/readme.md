@@ -30,6 +30,8 @@
 * x11
 >-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -e GDK_SCALE -e GDK_DPI_SCALE
 
+注意镜像本身要配置好x11
+
 ## instances
 
 * [[eco]](./eco)
@@ -58,3 +60,6 @@ conda config --set show_channel_urls yes </br>
 >conda search caffe </br>
 >conda install caffe=1.0=py27_blas_openblas_201
 
+* setup.py
+>python setup.py build
+python setup.py install

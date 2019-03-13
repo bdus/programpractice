@@ -57,14 +57,13 @@ namespace MyDSA
     }
 
     
-
-
-
     //[]
     template <typename T>
     T & List<T>::operator[] (Rank r) const
     {
-        ListNode<T> * loca = first();        
+        ListNodePosi(T) loca = header->succ; //first(); 
+        //谜一样的报错
+        //list_implemention.h:64:38: error: passing ‘const MyDSA::List<int>’ as ‘this’ argument of ‘MyDSA::ListNode<T>* MyDSA::List<T>::first() [with T = int]’ discards qualifiers [-fpermissive]
         while(r-->0)
             loca = loca->succ;
         return loca->data;

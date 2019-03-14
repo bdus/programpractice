@@ -9,3 +9,8 @@
 
 [[dual linked list]](./cpp/linux/list)
 
+[[stack]](./cpp/linux/stack)
+
+[[queue]](./cpp/linux/queue)
+
+

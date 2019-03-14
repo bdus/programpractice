@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <time.h>
+//#include <time.h>
 
 /*
 * https://github.com/hungry0/DataStructureOfDeng/blob/master/src/vector/vector.h

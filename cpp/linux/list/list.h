@@ -32,7 +32,7 @@ namespace MyDSA
         ListNodePosi(T) last() { return trailer->prev; };
 
         //write
-        T & operator[] (Rank r) const;
+        T& operator[] (Rank r) const;
         ListNodePosi(T) insertAsFirst( T const & e);
         ListNodePosi(T) insertAsLast( T const & e);
         ListNodePosi(T) insertAfter(ListNodePosi(T) p, T const & e);

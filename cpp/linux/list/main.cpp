@@ -24,6 +24,8 @@ int main()
     test(list.first());
     cout << "size : " << list.size()   << endl;
 
+    //[]
+    cout << "list[0] : " << list[0] << endl;
        
     return 0;
 }

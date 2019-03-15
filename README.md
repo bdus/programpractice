@@ -13,4 +13,4 @@
 
 [[queue]](./cpp/linux/queue)
 
-
+[[binTree]](./cpp/linux/binTree)

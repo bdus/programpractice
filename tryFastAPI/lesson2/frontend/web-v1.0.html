@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3 + FastAPI 示例</title>
+  <!-- 引入Vue3 CDN -->
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+  <!-- 引入Axios CDN -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+  <!-- <script src="https://cdn.staticfile.net/vue/3.2.31/vue.global.min.js"></script> -->
+  <!-- <script src="https://cdn.staticfile.net/axios/1.5.0/axios.min.js"></script> -->
+<script src="./src/vue.global.min.js"></script>
+<script src="./src/axios.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .sidebar li:hover {
+      background-color: #e0e0e0;
+    }
+    .sidebar li.active {
+      background-color: #2196F3;
+      color: white;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .json-viewer {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    .item-info {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    .item-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="sidebar">
+        <h2>项目列表</h2>
+        <ul>
+          <li 
+            v-for="item in items" 
+            :key="item.uuid"
+            @click="selectItemF(item.uuid)"
+            :class="{ active: selectedUUID === item.uuid }"
+          >
+            {{ item.name }}
+          </li>
+        </ul>
+      </div>
+      
+      <div class="content">
+        <div v-if="selectedItem">
+          <h2>项目详情</h2>
+          <div class="json-viewer">
+            <pre>{{ JSON.stringify(selectedItem, null, 2) }}</pre>
+          </div>
+          <div class="item-info">
+            <p><strong>名称:</strong> {{ selectedItem.name }}</p>
+            <p><strong>文件地址:</strong> {{ selectedItem.file_path }}</p>
+          </div>
+        </div>
+        <div v-else>
+          <p>请从左侧选择一个项目</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue;
+    
+    createApp({
+      setup() {
+        const API_URL = 'http://localhost:8000';
+        const items = ref([]);
+        const selectedUUID = ref(null);
+        const selectedItem = ref(null);
+
+        onMounted(async () => {
+          try {
+            const response = await axios.get(`${API_URL}/items`);
+            items.value = response.data.items;
+          } catch (error) {
+            console.error('Error fetching items:', error);
+          }
+        });
+
+        const selectItemF = async (uuid) => {
+          selectedUUID.value = uuid;
+          try {
+            const response = await axios.get(`${API_URL}/items/${uuid}`);
+            selectedItem.value = response.data;
+          } catch (error) {
+            console.error('Error fetching item details:', error);
+            selectedItem.value = null;
+          }
+        };
+
+        return {
+          items,
+          selectedUUID,
+          selectedItem,
+          selectItemF
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

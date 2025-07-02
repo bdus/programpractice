@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目管理系统 - 带任务队列</title>
+  <!-- 引入Vue3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- 引入Axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- 引入Font Awesome图标 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2980, #26d0ce);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .app-container {
+      width: 100%;
+      max-width: 1400px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 95vh;
+    }
+    
+    header {
+      background: linear-gradient(to right, #2c3e50, #4a6491);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .logo i {
+      font-size: 32px;
+      color: #42b983;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .logo h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(to right, #3498db, #2980b9);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      font-size: 15px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-refresh {
+      background: linear-gradient(to right, #27ae60, #2ecc71);
+    }
+    
+    .btn-toggle {
+      background: linear-gradient(to right, #9b59b6, #8e44ad);
+    }
+    
+    .btn-create {
+      background: linear-gradient(to right, #e67e22, #d35400);
+    }
+    
+    .auto-refresh-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      font-size: 15px;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background: linear-gradient(to right, #27ae60, #2ecc71);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    .sidebar {
+      width: 35%;
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      border-right: 1px solid #34495e;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #3498db;
+    }
+    
+    .sidebar-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+    }
+    
+    .search-box {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    
+    .search-box input {
+      flex: 1;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 6px 0 0 6px;
+      font-size: 15px;
+    }
+    
+    .search-box button {
+      padding: 0 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .search-box button:hover {
+      background: #2980b9;
+    }
+    
+    .item-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .item-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .item-card:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .item-card.active {
+      background: rgba(52, 152, 219, 0.3);
+      border: 1px solid #3498db;
+      box-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
+    }
+    
+    .item-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #3498db;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .item-card .status {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .status-processing {
+      background: rgba(231, 76, 60, 0.7);
+      color: white;
+    }
+    
+    .status-completed {
+      background: rgba(46, 204, 113, 0.7);
+      color: white;
+    }
+    
+    .item-card .uuid {
+      font-size: 12px;
+      color: #95a5a6;
+      word-break: break-all;
+      font-family: monospace;
+      margin-top: 8px;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      gap: 10px;
+    }
+    
+    .page-btn {
+      padding: 10px 18px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+    
+    .page-btn:hover:not(:disabled) {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+    
+    .page-btn:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    
+    .page-info {
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 30px;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e74c3c;
+    }
+    
+    .content-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      color: #2c3e50;
+    }
+    
+    .detail-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      overflow: hidden;
+    }
+    
+    .json-viewer {
+      flex: 1;
+      background: #2c3e50;
+      color: #f8f9fa;
+      border-radius: 12px;
+      padding: 25px;
+      overflow: auto;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 16px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-row {
+      display: flex;
+      margin-bottom: 15px;
+    }
+    
+    .info-label {
+      font-weight: bold;
+      width: 120px;
+      color: #3498db;
+    }
+    
+    .info-value {
+      flex: 1;
+      color: #2c3e50;
+      word-break: break-all;
+    }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: #7f8c8d;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: #bdc3c7;
+      opacity: 0.7;
+    }
+    
+    .empty-state h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    
+    .status-bar {
+      background: #34495e;
+      color: #ecf0f1;
+      padding: 12px 25px;
+      font-size: 15px;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .last-updated {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .system-info {
+      display: flex;
+      gap: 25px;
+    }
+    
+    .system-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .highlight {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    
+    .warning {
+      color: #f39c12;
+      font-weight: bold;
+    }
+    
+    .danger {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    
+    .queue-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f39c12;
+      box-shadow: 0 0 10px #f39c12;
+      animation: pulse-queue 1.5s infinite;
+    }
+    
+    @keyframes pulse-queue {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+    
+    .create-form {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border 0.3s;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 1100px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        max-height: 40vh;
+      }
+      
+      .app-container {
+        height: auto;
+        min-height: 95vh;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .system-info {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="app-container">
+      <header>
+        <div class="logo">
+          <i class="fas fa-project-diagram"></i>
+          <h1>项目管理系统 - 任务队列版</h1>
+        </div>
+        <div class="controls">
+          <button class="btn btn-refresh" @click="refreshItems">
+            <i class="fas fa-sync-alt"></i> 刷新列表
+          </button>
+          <button class="btn btn-create" @click="showCreateForm = !showCreateForm">
+            <i class="fas fa-plus-circle"></i> {{ showCreateForm ? '取消创建' : '创建项目' }}
+          </button>
+          <div class="auto-refresh-label">
+            <i class="fas fa-clock"></i> 自动刷新:
+            <label class="switch">
+              <input type="checkbox" v-model="autoRefreshEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </header>
+      
+      <div class="main-content">
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <h2><i class="fas fa-list"></i> 项目列表</h2>
+            <div class="total-items">共 {{ totalItems }} 个项目</div>
+          </div>
+          
+          <div class="search-box">
+            <input type="text" placeholder="搜索项目..." v-model="searchQuery">
+            <button @click="searchItems"><i class="fas fa-search"></i></button>
+          </div>
+          
+          <div class="item-list">
+            <div 
+              v-for="item in displayedItems" 
+              :key="item.uuid"
+              class="item-card"
+              :class="{ active: selectedUUID === item.uuid }"
+              @click="selectItem(item.uuid)"
+            >
+              <div v-if="item.status === '进行中'" class="queue-indicator"></div>
+              <h3>{{ item.name }} 
+                <span class="status" :class="{
+                  'status-processing': item.status === '进行中',
+                  'status-completed': item.status === '已完成'
+                }">
+                  {{ item.status }}
+                </span>
+              </h3>
+              <div class="uuid">{{ item.uuid }}</div>
+            </div>
+          </div>
+          
+          <div class="pagination">
+            <button 
+              class="page-btn" 
+              @click="prevPage" 
+              :disabled="currentPage === 1"
+            >
+              <i class="fas fa-chevron-left"></i> 上一页
+            </button>
+            <span class="page-info">第 {{ currentPage }} 页 / 共 {{ totalPages }} 页</span>
+            <button 
+              class="page-btn" 
+              @click="nextPage" 
+              :disabled="currentPage >= totalPages"
+            >
+              下一页 <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="content">
+          <div class="content-header">
+            <h2><i class="fas fa-info-circle"></i> 
+              {{ showCreateForm ? '创建新项目' : '项目详情' }}
+            </h2>
+            <div class="page-size-control">
+              <span>每页显示: </span>
+              <select v-model="pageSize" @change="changePageSize">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="detail-container">
+            <!-- 创建新项目表单 -->
+            <div v-if="showCreateForm" class="create-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">项目名称 *</label>
+                  <input type="text" id="name" v-model="newItem.name" placeholder="输入项目名称">
+                </div>
+                <div class="form-group">
+                  <label for="size">项目大小 (MB) *</label>
+                  <input type="number" id="size" v-model="newItem.size" min="0.1" step="0.1" placeholder="例如：24.5">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="file_path">文件路径 *</label>
+                <input type="text" id="file_path" v-model="newItem.file_path" placeholder="/path/to/file">
+              </div>
+              
+              <div class="form-group">
+                <label for="description">项目描述</label>
+                <textarea id="description" v-model="newItem.description" rows="3" placeholder="输入项目描述..."></textarea>
+              </div>
+              
+              <button class="btn btn-create" @click="createItem" :disabled="!formValid">
+                <i class="fas fa-paper-plane"></i> 提交新项目
+              </button>
+            </div>
+            
+            <!-- 项目详情展示 -->
+            <template v-else>
+              <div v-if="selectedItem" class="json-viewer">
+                <pre>{{ JSON.stringify(selectedItem, null, 2) }}</pre>
+              </div>
+              
+              <div v-if="selectedItem" class="info-grid">
+                <div class="info-card">
+                  <h3><i class="fas fa-file-alt"></i> 基本信息</h3>
+                  <div class="info-row">
+                    <div class="info-label">项目名称:</div>
+                    <div class="info-value">{{ selectedItem.name }}</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">文件地址:</div>
+                    <div class="info-value">{{ selectedItem.file_path }}</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">创建时间:</div>
+                    <div class="info-value">{{ formatDate(selectedItem.created_at) }}</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">项目大小:</div>
+                    <div class="info-value">{{ selectedItem.size }} MB</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">项目状态:</div>
+                    <div class="info-value" :class="{
+                      'danger': selectedItem.status === '进行中',
+                      'highlight': selectedItem.status === '已完成'
+                    }">
+                      {{ selectedItem.status }}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="info-card">
+                  <h3><i class="fas fa-info-circle"></i> 其他信息</h3>
+                  <div class="info-row">
+                    <div class="info-label">UUID:</div>
+                    <div class="info-value">{{ selectedUUID }}</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">描述:</div>
+                    <div class="info-value">{{ selectedItem.description }}</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">最后访问:</div>
+                    <div class="info-value">{{ formatDate() }}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div v-if="!selectedItem" class="empty-state">
+                <i class="fas fa-hand-pointer"></i>
+                <h3>请从左侧选择一个项目</h3>
+                <p>点击项目名称查看详细信息</p>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+      
+      <div class="status-bar">
+        <div class="last-updated">
+          <i class="fas fa-history"></i>
+          <span>最后更新: {{ lastUpdated }}</span>
+        </div>
+        <div class="system-info">
+          <div class="system-info-item">
+            <i class="fas fa-database"></i> 
+            项目总数: <span class="highlight">{{ totalItems }}</span>
+          </div>
+          <div class="system-info-item">
+            <i class="fas fa-tasks"></i> 
+            队列任务: <span class="warning">{{ queueSize }}</span>
+          </div>
+          <div class="system-info-item">
+            <i class="fas fa-server"></i> 
+            后端状态: 
+            <span :style="{ color: backendStatus === '在线' ? '#2ecc71' : '#e74c3c' }">
+              {{ backendStatus }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted, computed, watch } = Vue;
+    
+    createApp({
+      setup() {
+        const API_URL = 'http://localhost:8000';
+        const items = ref([]);
+        const selectedUUID = ref(null);
+        const selectedItem = ref(null);
+        const autoRefreshEnabled = ref(false);
+        const lastUpdated = ref('从未更新');
+        const backendStatus = ref('检查中...');
+        const searchQuery = ref('');
+        const queueSize = ref(0);
+        const showCreateForm = ref(false);
+        
+        // 新项目表单数据
+        const newItem = ref({
+          name: '',
+          description: '',
+          file_path: '',
+          size: 1.0
+        });
+        
+        // 分页相关变量
+        const currentPage = ref(1);
+        const pageSize = ref(10);
+        const totalItems = ref(0);
+        const totalPages = ref(1);
+        
+        // 计算属性
+        const formValid = computed(() => {
+          return newItem.value.name && 
+                 newItem.value.file_path && 
+                 newItem.value.size > 0;
+        });
+        
+        // 过滤后的项目列表
+        const displayedItems = computed(() => {
+          if (!searchQuery.value) {
+            return items.value;
+          }
+          const query = searchQuery.value.toLowerCase();
+          return items.value.filter(item => 
+            item.name.toLowerCase().includes(query) || 
+            item.uuid.toLowerCase().includes(query)
+          );
+        });
+        
+        // 获取项目列表（带分页）
+        const fetchItems = async () => {
+          try {
+            const response = await axios.get(`${API_URL}/items`, {
+              params: {
+                page: currentPage.value,
+                page_size: pageSize.value
+              }
+            });
+            
+            items.value = response.data.items;
+            totalItems.value = response.data.total;
+            totalPages.value = response.data.total_pages;
+            
+            updateLastUpdated();
+            backendStatus.value = '在线';
+            
+            // 更新队列状态
+            const queueStatus = await axios.get(`${API_URL}/queue/status`);
+            queueSize.value = queueStatus.data.queue_size;
+            
+            // 如果当前页没有选中项目，则清空选中
+            if (items.value.length > 0 && !selectedUUID.value) {
+              selectItem(items.value[0].uuid);
+            } else if (!items.value.find(item => item.uuid === selectedUUID.value)) {
+              selectedItem.value = null;
+            }
+          } catch (err) {
+            console.error('获取项目列表失败:', err);
+            backendStatus.value = '离线';
+          }
+        };
+        
+        // 获取单个项目详情
+        const fetchItemDetails = async (uuid) => {
+          try {
+            const response = await axios.get(`${API_URL}/items/${uuid}`);
+            selectedItem.value = response.data;
+            selectedItem.value.uuid = uuid; // 添加UUID到详情对象
+            backendStatus.value = '在线';
+          } catch (err) {
+            console.error('获取项目详情失败:', err);
+            backendStatus.value = '离线';
+          }
+        };
+        
+        // 选择项目
+        const selectItem = (uuid) => {
+          selectedUUID.value = uuid;
+          fetchItemDetails(uuid);
+        };
+        
+        // 刷新项目列表
+        const refreshItems = () => {
+          fetchItems();
+        };
+        
+        // 搜索项目
+        const searchItems = () => {
+          currentPage.value = 1;
+          fetchItems();
+        };
+        
+        // 上一页
+        const prevPage = () => {
+          if (currentPage.value > 1) {
+            currentPage.value--;
+            fetchItems();
+          }
+        };
+        
+        // 下一页
+        const nextPage = () => {
+          if (currentPage.value < totalPages.value) {
+            currentPage.value++;
+            fetchItems();
+          }
+        };
+        
+        // 改变每页显示数量
+        const changePageSize = () => {
+          currentPage.value = 1;
+          fetchItems();
+        };
+        
+        // 创建新项目
+        const createItem = async () => {
+          try {
+            const response = await axios.post(`${API_URL}/items/`, newItem.value);
+            alert(`项目创建成功!\nUUID: ${response.data.uuid}\n状态: ${response.data.status}`);
+            
+            // 重置表单
+            newItem.value = {
+              name: '',
+              description: '',
+              file_path: '',
+              size: 1.0
+            };
+            
+            // 刷新列表
+            currentPage.value = 1;
+            fetchItems();
+            
+            // 选中新创建的项目
+            setTimeout(() => {
+              selectItem(response.data.uuid);
+              showCreateForm.value = false;
+            }, 500);
+          } catch (err) {
+            alert('创建项目失败: ' + (err.response?.data?.detail || err.message));
+          }
+        };
+        
+        // 更新最后更新时间
+        const updateLastUpdated = () => {
+          const now = new Date();
+          lastUpdated.value = now.toLocaleTimeString();
+        };
+        
+        // 格式化日期
+        const formatDate = (timestamp) => {
+          if (!timestamp) return new Date().toLocaleString();
+          const date = new Date(timestamp * 1000);
+          return date.toLocaleString();
+        };
+        
+        // 自动刷新逻辑
+        watch(autoRefreshEnabled, (newVal) => {
+          if (newVal) {
+            refreshItems();
+          }
+        });
+        
+        // 初始化
+        onMounted(() => {
+          fetchItems();
+          
+          // 设置自动刷新定时器
+          setInterval(() => {
+            if (autoRefreshEnabled.value) {
+              fetchItems();
+            }
+          }, 5000); // 每5秒刷新一次
+        });
+        
+        return {
+          items,
+          displayedItems,
+          selectedUUID,
+          selectedItem,
+          autoRefreshEnabled,
+          lastUpdated,
+          backendStatus,
+          searchQuery,
+          currentPage,
+          pageSize,
+          totalItems,
+          totalPages,
+          queueSize,
+          showCreateForm,
+          newItem,
+          formValid,
+          refreshItems,
+          searchItems,
+          selectItem,
+          prevPage,
+          nextPage,
+          changePageSize,
+          createItem,
+          formatDate
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

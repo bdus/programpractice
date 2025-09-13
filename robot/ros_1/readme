@@ -1,0 +1,17 @@
+ros2 话题发布和订阅
+使用 rclpy / rclcpp
+
+```python
+python3 ros2_node_py.py
+```
+
+export RCUTILS_CONSOLE_OUTPUT_FORMAT=[{function_name}:{line_number}]:{message}
+
+ros2 node list
+CMakeLists.txt
+
+使用“外部构建目录”（out-of-source build）
+mkdir shit
+cd shit
+cmake ..
+make 

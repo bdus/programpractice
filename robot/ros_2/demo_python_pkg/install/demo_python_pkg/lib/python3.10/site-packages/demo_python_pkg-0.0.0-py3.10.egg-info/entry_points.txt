@@ -1,0 +1,3 @@
+[console_scripts]
+python_node = demo_python_pkg.ros2_node_py:main
+

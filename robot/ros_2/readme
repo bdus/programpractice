@@ -1,0 +1,68 @@
+# 使用ROS2 组织节点的方式
+ros2 pkg create demo_python_pkg --build-type ament_python --license Apache-2.0
+
+cp ros2_node_py.py ./demo_python_pkg/demo_python_pkg/
+
+then edited 
+
+setup.py
+```py
+    entry_points={
+        'console_scripts': [
+            # edited 
+            'python_node = demo_python_pkg.ros2_node_py:main',
+        ],
+    },
+```
+
+package.xml
+```xml
+    <depend>rclpy</depend>
+```
+
+colcon build 
+
+source install/setup.bash 
+echo $AMENT_PREFIX_PATH | grep demo_python_pkg
+ros2 run demo_python_pkg python_node
+
+
+# 功能包组织c++节点
+
+ros2 pkg create demo_cpp_pkg --build-type ament_cmake --license Apache-2.0
+
+cp ros2_node_cpp.cpp demo_cpp_pkg/src
+
+CMakeLists.txt
+```xml
+find_package(rclcpp REQUIRED)
+add_executable(cpp_node src/ros2_node_cpp.cpp)
+ament_target_dependencies(cpp_node rclcpp)
+
+install(TARGETS
+cpp_node
+DESTINATION lib/${PROJECT_NAME}
+)
+
+```
+
+
+package.xml
+```xml
+    <depend>rclpy</depend>
+```
+
+
+yahboom@yahboom-VM:~/a_linux_img/practice/ros_2$ colcon build
+Starting >>> demo_cpp_pkg
+Starting >>> demo_python_pkg               
+Finished <<< demo_python_pkg [3.94s]                                                  
+Finished <<< demo_cpp_pkg [19.6s]                       
+
+Summary: 2 packages finished [21.0s]
+
+
+source install/setup.bash 
+echo $AMENT_PREFIX_PATH | grep demo_
+ros2 run demo_cpp_pkg cpp_node
+

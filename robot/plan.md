@@ -9,6 +9,7 @@
 - [ ] ros2 话题发布和订阅[[link]](https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Colcon-Tutorial.html)
 
 [使用 rclpy / rclcpp](ros_1/readme)
+[ROS2 pkg 打包](ros_2/readme)
 
 使用 rviz2 可视化传感器数据
 
@@ -17,3 +18,8 @@
 - [ ] 小车控制原理
 - [ ] slam gmapping执行、读懂
 - [ ] spotMicro NimbRo-OP
+
+- [ ] torch复健
+    
+    - [基于docker折腾cuda环境](lesson1)    
+    transforms finetune

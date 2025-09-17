@@ -125,3 +125,22 @@ turtle_control
 DESTINATION lib/${PROJECT_NAME}
 )
 ```
+
+
+# for ros2 kilted
+
+ros2 pkg create turtle_topic_cpp_kilted --build-type ament_cmake --dependencies rclcpp geometry_msgs turtlesim_msgs --license Apache-2.0 --node-name turtle_circle
+
+修改对应的安装包和cmake文件
+
+bdus@bdus-X99:/media/bdus/data/workspace/programpractice/robot/ros_3$ colcon build --packages-select turtle_topic_cpp_kilted
+Starting >>> turtle_topic_cpp_kilted
+Finished <<< turtle_topic_cpp_kilted [10.3s]
+
+Summary: 1 package finished [10.5s]
+bdus@bdus-X99:/media/bdus/data/workspace/programpractice/robot/ros_3$
+bdus@bdus-X99:/media/bdus/data/workspace/programpractice/robot/ros_3$ source install/setup.bash
+
+ros2 run turtlesim turtlesim_node
+ros2 run turtle_topic_cpp_kilted turtle_circle
+ros2 run turtle_topic_cpp_kilted turtle_control

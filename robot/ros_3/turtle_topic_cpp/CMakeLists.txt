@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(demo_cpp_pkg)
+project(turtle_topic_cpp)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,23 +7,21 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-
-#edited
 find_package(rclcpp REQUIRED)
-include_directories(include)
-add_executable(cpp_node src/ros2_node_cpp.cpp)
-add_executable(learn_thread src/learn_thread.cpp)
-ament_target_dependencies(cpp_node rclcpp)
+find_package(geometry_msgs REQUIRED)
+find_package(turtlesim REQUIRED)
+
+
+add_executable(turtle_circle src/turtle_circle.cpp)
+add_executable(turtle_control src/turtle_control.cpp)
+ament_target_dependencies(turtle_circle rclcpp geometry_msgs)
+ament_target_dependencies(turtle_control rclcpp geometry_msgs turtlesim)
 
 install(TARGETS
-cpp_node
-learn_thread
+turtle_circle
+turtle_control
 DESTINATION lib/${PROJECT_NAME}
 )
-
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

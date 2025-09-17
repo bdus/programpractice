@@ -66,3 +66,27 @@ source install/setup.bash
 echo $AMENT_PREFIX_PATH | grep demo_
 ros2 run demo_cpp_pkg cpp_node
 
+
+# 功能包组织python节点 直接带上 rclpy依赖
+
+ros2 pkg create pkg_helloworld_py --build-type ament_python --dependencies rclpy --node-name helloworld
+
+cd pkg_helloworld_py edit helloworld.py
+
+colcon build --packages-select pkg_helloworld_py
+
+source install/setup.bash
+
+ros2 run pkg_helloworld_py helloworld
+
+
+# 多线程编程
+
+echo "Heavenly Peach Banquet" > place1.txt
+echo "GAO LAO ZHUANG" > place2.txt
+echo "Pansi Cave" > place3.txt
+
+python3 -m http.server 
+
+colcon build --packages-select pkg_helloworld_py
+ros2 

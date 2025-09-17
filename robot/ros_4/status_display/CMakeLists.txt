@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(demo_cpp_pkg)
+project(status_display)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,23 +7,40 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-
-#edited
 find_package(rclcpp REQUIRED)
-include_directories(include)
-add_executable(cpp_node src/ros2_node_cpp.cpp)
-add_executable(learn_thread src/learn_thread.cpp)
-ament_target_dependencies(cpp_node rclcpp)
+find_package(status_interfaces REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
-install(TARGETS
-cpp_node
-learn_thread
-DESTINATION lib/${PROJECT_NAME}
+
+add_executable(hello_qt src/hello_qt.cpp)
+add_executable(sys_status_display src/sys_status_display.cpp)
+
+
+target_link_libraries(hello_qt Qt5::Widgets)
+target_link_libraries(sys_status_display Qt5::Widgets)
+
+target_include_directories(hello_qt PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+target_compile_features(hello_qt PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(    
+  hello_qt
+  "rclcpp"
+  "status_interfaces"
+)
+
+ament_target_dependencies(
+  sys_status_display
+  "rclcpp"
+  "status_interfaces"
+)
+
+install(TARGETS 
+hello_qt
+sys_status_display
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

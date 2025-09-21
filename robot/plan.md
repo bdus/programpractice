@@ -45,6 +45,10 @@ Ctrl + a [ 然后方向控制
 - [x] 执行完亚博ROS教程
 - [ ] 华为开发环境折腾
 - [ ] 小车控制原理
+
+    [在本地ubuntu上连接小车](car_1/readme.md)
+    
+
 - [ ] slam gmapping执行、读懂
 - [ ] spotMicro NimbRo-OP
 

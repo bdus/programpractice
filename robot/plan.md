@@ -46,8 +46,10 @@ Ctrl + a [ 然后方向控制
 - [ ] 华为开发环境折腾
 - [ ] 小车控制原理
 
-    [在本地ubuntu上连接小车](car_1/readme.md)
-    
+    - [在本地ubuntu上连接小车](car_1/readme.md)
+    - [使用手柄控制小车]
+    - [可视化SLAM数据]
+
 
 - [ ] slam gmapping执行、读懂
 - [ ] spotMicro NimbRo-OP

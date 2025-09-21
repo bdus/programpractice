@@ -136,7 +136,7 @@ export ROS_DOMAIN_ID=20
 # sudo ufw allow 8090/udp # 可能需要放通防火墙
 
 # 启动网关
-docker run -it --rm -v /dev:/dev -v /dev/shm:/dev/shm --privileged --net=host microros/micro-ros-agent:humble udp4 --port 8090 -v4
+docker run -it --rm -v /dev:/dev -v /dev/shm:/dev/shm --privileged --net=host microros/micro-ros-agent:humble udp4 --port 8090 -v4 
 
 # 启动小车 网关连接成功
 ```
@@ -173,3 +173,39 @@ bdus@bdus-X99:~$ ros2 node list
 
 
 https://micro.ros.org/
+https://hub.docker.com/r/microros/micro-ros-agent
+
+
+
+ps 避免执行ros2 topic echo /scan，如果遇到了 crash
+可能是 ROS 2 的底层序列化库（Fast CDR）在反序列化 /scan 消息时，发现缓冲区不够大，无法容纳完整的 LaserScan 数据，导致程序因未捕获异常而崩溃
+这个时候
+```bash
+# 删除所有容器（确保没有其他重要容器）
+docker rm $(docker ps -a -q)
+
+# 或者只删除 micro-ROS 相关容器
+docker ps -a | grep microros
+docker stop <container_name>
+docker rm <container_name>
+
+
+✅ 步骤 3：清理主机上的 DDS 共享内存（关键！）
+Fast DDS 使用 /dev/shm（共享内存）进行高效通信。崩溃后可能残留损坏的段。
+
+bash
+深色版本
+# 查看 /dev/shm 中的 Fast DDS 文件
+ls /dev/shm | grep fast
+
+# 删除所有 fast DDS 共享内存文件
+sudo rm -f /dev/shm/fast_*
+
+# 或者更激进（不影响系统）：
+sudo rm -f /dev/shm/dds*
+
+```
+
+或者直接 rolling
+
+docker run -it --rm -v /dev:/dev -v /dev/shm:/dev/shm --privileged --net=host microros/micro-ros-agent:rolling udp4 --port 8090 -v4 

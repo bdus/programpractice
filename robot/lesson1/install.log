@@ -1,0 +1,46 @@
+# install ROS2
+https://docs.ros.org/en/kilted/Installation/Ubuntu-Install-Debs.html
+
+source /opt/ros/kilted/setup.bash
+ros2 run demo_nodes_cpp talker
+
+source /opt/ros/kilted/setup.bash
+ros2 run demo_nodes_py listener
+
+# update source
+https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
+https://mirrors.tuna.tsinghua.edu.cn/help/ros2/
+
+# install nvidia/CUDA
+https://zhuanlan.zhihu.com/p/1894453286439982079
+
+nvidia-smi
+
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+
+sudo apt install cuda-toolkit-12-8
+echo 'export PATH=/usr/local/cuda-12.8/bin${PATH:+:${PATH}}' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}' >> ~/.bashrc
+source ~/.bashrc
+
+nvcc -V
+
+sudo apt install libcudnn9-cuda-12 libcudnn9-dev-cuda-12 libcudnn9-samples
+
+dpkg -l | grep cudnn
+
+# docker ce
+
+https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/
+https://docs.docker.com/engine/install/ubuntu/
+https://docs.nvidia.com/ai-enterprise/deployment/vmware/latest/docker.html
+
+
+sudo usermod -aG docker $USER
+
+
+newgrp docker
+docker ps
+
